@@ -1,5 +1,24 @@
+import type { PlasmoCSConfig } from "plasmo";
 import { detectColors } from "./utils/colorDetector";
-import { createColorizedElement, isAlreadyColorized } from "./utils/domUtils";
+import {
+  CODE_CONTAINER_SELECTOR,
+  SKIP_SELECTOR,
+  createColorizedElement,
+  isAlreadyColorized,
+} from "./utils/domUtils";
+
+export const config: PlasmoCSConfig = {
+  matches: [
+    "https://github.com/*",
+    "https://gitlab.com/*",
+    "https://gitee.com/*",
+    "https://bitbucket.org/*",
+    "https://dev.azure.com/*",
+    "https://*.github.dev/*",
+    "https://*.gitpod.io/*",
+  ],
+  all_frames: true,
+};
 
 /**
  * Process text nodes to colorize color codes
@@ -45,13 +64,61 @@ function processTextNode(textNode: Text): void {
 /**
  * Process a node and its children to colorize color codes
  */
-function processNode(node: Node, depth: number = 0): void {
+function processNode(
+  node: Node,
+  depth: number = 0,
+  isInsideContainer: boolean = false,
+): void {
   if (depth > 50) {
     return; // Prevent infinite recursion
   }
 
   // Skip if already colorized or is a special element
   if (isAlreadyColorized(node)) {
+    return;
+  }
+
+  // Skip line numbers and other UI elements
+  if (node.nodeType === Node.ELEMENT_NODE && (node as HTMLElement).closest(SKIP_SELECTOR)) {
+    return;
+  }
+  if (node.nodeType === Node.TEXT_NODE && node.parentElement?.closest(SKIP_SELECTOR)) {
+    return;
+  }
+
+  let currentIsInside = isInsideContainer;
+  if (!currentIsInside) {
+    if (node.nodeType === Node.ELEMENT_NODE) {
+      currentIsInside =
+        (node as HTMLElement).closest(CODE_CONTAINER_SELECTOR) !== null;
+    } else if (node.nodeType === Node.TEXT_NODE) {
+      currentIsInside =
+        node.parentElement?.closest(CODE_CONTAINER_SELECTOR) !== null;
+    }
+  }
+
+  // If not inside a container, only look for containers within this element
+  if (!currentIsInside) {
+    if (node.nodeType === Node.ELEMENT_NODE) {
+      const element = node as HTMLElement;
+      const skipTags = [
+        "SCRIPT",
+        "STYLE",
+        "NOSCRIPT",
+        "META",
+        "LINK",
+        "TITLE",
+        "HEAD",
+        "TEXTAREA",
+        "INPUT",
+      ];
+      if (!skipTags.includes(element.tagName.toUpperCase())) {
+        const containers = element.querySelectorAll(CODE_CONTAINER_SELECTOR);
+        containers.forEach((container) =>
+          processNode(container, depth + 1, true),
+        );
+      }
+    }
     return;
   }
 
@@ -78,6 +145,8 @@ function processNode(node: Node, depth: number = 0): void {
       "LINK",
       "TITLE",
       "HEAD",
+      "TEXTAREA",
+      "INPUT",
     ];
     if (skipTags.includes(element.tagName.toUpperCase())) {
       return;
@@ -86,7 +155,7 @@ function processNode(node: Node, depth: number = 0): void {
     // Process children
     const children = Array.from(node.childNodes);
     for (const child of children) {
-      processNode(child, depth + 1);
+      processNode(child, depth + 1, true);
     }
   }
 }
@@ -96,16 +165,18 @@ function processNode(node: Node, depth: number = 0): void {
  */
 function colorizeEditor(): void {
   // Find code editor containers on the page
-  const codeContainers = document.querySelectorAll(
-    ".blob-code, .blob-wrapper, .file-content, .CodeMirror, .ace_editor, .monaco-editor, [id*='editor'], .hljs",
-  );
+  const codeContainers = document.querySelectorAll(CODE_CONTAINER_SELECTOR);
 
   if (codeContainers.length === 0) {
-    // Fallback: process the entire body for smaller pages or alternative editors
-    processNode(document.body);
+    // Fallback: try to find main content area or just process body
+    // We are already restricted by manifest matches to target domains
+    const mainArea = document.querySelector(
+      ".repository-content, #js-repo-pjax-container, #repository-container-react, .content-wrapper, main, [role='main']",
+    );
+    processNode(mainArea || document.body, 0, false);
   } else {
     codeContainers.forEach((container) => {
-      processNode(container);
+      processNode(container, 0, true);
     });
   }
 }

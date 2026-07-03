@@ -160,8 +160,9 @@ const NAMED_COLORS = new Set([
  */
 const COLOR_PATTERNS = {
   // Hex colors: #fff, #ffffff, #ffff, #ffffffff
-  // Match hex codes followed by non-hex characters or end of string
-  hex: /\b#?([0-9a-fA-F]{3,6}|[0-9a-fA-F]{8})\b/gi,
+  // We allow optional # prefix to support bare hex as requested by the user.
+  // We restrict lengths to 3, 4, 6, 8 as these are valid CSS hex colors.
+  hex: /#?\b([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})\b/gi,
 
   // RGB/RGBA: rgb(255, 255, 255), rgba(255, 255, 255, 0.5)
   rgb: /rgba?\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*([\d.]+)\s*)?\)/gi,
@@ -210,6 +211,15 @@ export function detectColors(text: string): ColorMatch[] {
   COLOR_PATTERNS.hex.lastIndex = 0;
   while ((match = COLOR_PATTERNS.hex.exec(text)) !== null) {
     const fullMatch = match[0];
+    const isBare = !fullMatch.startsWith("#");
+    const hexValue = isBare ? fullMatch : fullMatch.substring(1);
+
+    // If it's a bare 3 or 4 digit hex, it MUST contain at least one letter
+    // to avoid matching line numbers like 123
+    if (isBare && hexValue.length <= 4 && /^\d+$/.test(hexValue)) {
+      continue;
+    }
+
     const hex = tryParseColor(fullMatch);
     if (
       hex &&
@@ -223,30 +233,6 @@ export function detectColors(text: string): ColorMatch[] {
         format: "hex",
       });
       seenMatches.add(`${match.index}-${COLOR_PATTERNS.hex.lastIndex}`);
-    }
-  }
-
-  // Check bare hex codes (6 or 8 digit hex without # prefix)
-  // This catches patterns like code="e74c3c" or value="ffffff"
-  const bareHexPattern =
-    /(?:^|[^0-9a-fA-F])([0-9a-fA-F]{6}|[0-9a-fA-F]{8})(?![0-9a-fA-F])/g;
-  let bareMatch: RegExpExecArray | null;
-  bareHexPattern.lastIndex = 0;
-  while ((bareMatch = bareHexPattern.exec(text)) !== null) {
-    const hexValue = bareMatch[1];
-    const hex = tryParseColor(`#${hexValue}`);
-    const startPos = bareMatch.index + bareMatch[0].indexOf(hexValue);
-    const endPos = startPos + hexValue.length;
-
-    if (hex && !seenMatches.has(`${startPos}-${endPos}`)) {
-      matches.push({
-        text: hexValue,
-        hexColor: hex,
-        startIndex: startPos,
-        endIndex: endPos,
-        format: "hex",
-      });
-      seenMatches.add(`${startPos}-${endPos}`);
     }
   }
 

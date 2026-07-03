@@ -42,8 +42,7 @@ export function createColorizedElement(colorMatch: ColorMatch): HTMLElement {
   const wrapper = document.createElement("span");
   wrapper.className = COLORIZE_CLASS;
   wrapper.style.cssText = `
-    position: relative;
-    display: inline;
+    display: contents;
   `;
 
   // Create the color text (unchanged)
@@ -68,13 +67,24 @@ export function createColorizedElement(colorMatch: ColorMatch): HTMLElement {
 export function isAlreadyColorized(node: Node): boolean {
   if (node.nodeType === Node.ELEMENT_NODE) {
     const element = node as HTMLElement;
-    if (element.classList.contains(COLORIZE_CLASS)) {
-      return true;
-    }
-    if (element.classList.contains(COLOR_SWATCH_CLASS)) {
+    if (
+      element.classList.contains(COLORIZE_CLASS) ||
+      element.classList.contains(COLOR_SWATCH_CLASS)
+    ) {
       return true;
     }
   }
+
+  // Check if inside a colorized element
+  const parentElement =
+    node.nodeType === Node.ELEMENT_NODE
+      ? (node as HTMLElement)
+      : node.parentElement;
+
+  if (parentElement && parentElement.closest(`.${COLORIZE_CLASS}, .${COLOR_SWATCH_CLASS}`)) {
+    return true;
+  }
+
   return false;
 }
 
@@ -104,7 +114,13 @@ export function getNodeText(node: Node): string {
  * Selector for common code editor containers
  */
 export const CODE_CONTAINER_SELECTOR =
-  ".blob-code, .blob-wrapper, .file-content, .CodeMirror, .ace_editor, .monaco-editor, [id*='editor'], .hljs";
+  ".blob-code, .blob-code-inner, .blob-wrapper, .file-content, .CodeMirror, .ace_editor, .monaco-editor, [id*='editor'], .hljs, .react-file-line-contents, .react-line-contents, .react-code-text, [data-testid='code-cell'], .highlight, .syntax-highlighted";
+
+/**
+ * Selector for elements to skip (like line numbers)
+ */
+export const SKIP_SELECTOR =
+  ".blob-num, .js-line-number, .react-line-number, .line-numbers, .diff-line-num, [data-line-number], .line-number, .ln, .td-line-number, .js-file-line-number, .diff-line-num-prev, .diff-line-num-next, .blob-num-expandable";
 
 /**
  * Check if we should process this element
@@ -133,6 +149,11 @@ export function shouldProcessElement(element: HTMLElement): boolean {
     element.classList.contains(COLORIZE_CLASS) ||
     element.classList.contains(COLOR_SWATCH_CLASS)
   ) {
+    return false;
+  }
+
+  // Skip line numbers and other UI elements
+  if (element.closest(SKIP_SELECTOR) !== null) {
     return false;
   }
 

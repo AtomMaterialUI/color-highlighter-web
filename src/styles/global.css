@@ -1,12 +1,10 @@
 /* GitHub Colorize Extension Styles */
 
 .github-colorize-span {
-  position: relative;
-  display: inline;
+  display: contents;
 }
 
 .github-colorize-span > span:first-child {
-  position: relative;
   cursor: help;
   transition: background-color 0.2s ease;
 }
@@ -25,6 +23,7 @@
   border: 1px solid rgba(0, 0, 0, 0.2);
   vertical-align: middle;
   cursor: pointer;
+  user-select: none;
   transition: transform 0.1s ease, box-shadow 0.1s ease;
   box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.1);
 }
