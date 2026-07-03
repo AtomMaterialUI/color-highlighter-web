@@ -4,5 +4,5 @@ export * from "./colorUtils";
 export * from "./domUtils";
 export * from "./selectors";
 export * from "./gutter";
-export * from "./storage";
+export * from "./settingsStore";
 export * from "./parser";

@@ -1,11 +1,8 @@
-import { NAV_SELECTOR, loadSettings, onSettingsChanged, colorizeEditor, removeColorization, processNode } from "./utils";
-import { Settings, DEFAULT_SETTINGS } from "./types";
+import { NAV_SELECTOR, initSettings, subscribeSettings, getSettings, colorizeEditor, removeColorization, processNode } from "./utils";
 
 export const config = {
   matches: ["https://github.com/*", "https://gitlab.com/*", "https://bitbucket.org/*", "https://gitee.com/*"],
 };
-
-let settings: Settings = { ...DEFAULT_SETTINGS };
 
 /**
  * Setup a MutationObserver to handle dynamically added content
@@ -14,21 +11,12 @@ function setupMutationObserver(): void {
   const observer = new MutationObserver((mutations) => {
     for (const mutation of mutations) {
       if (mutation.type === "childList") {
-        // Process added nodes
         for (const node of mutation.addedNodes) {
-          if (
-            node.nodeType === Node.ELEMENT_NODE ||
-            node.nodeType === Node.TEXT_NODE
-          ) {
-            // Debounce: only process if there are additions
+          if (node.nodeType === Node.ELEMENT_NODE || node.nodeType === Node.TEXT_NODE) {
             processNode(node);
           }
         }
-      } else if (
-        mutation.type === "characterData" &&
-        mutation.target.parentNode
-      ) {
-        // Process text changes
+      } else if (mutation.type === "characterData" && mutation.target.parentNode) {
         processNode(mutation.target);
       }
     }
@@ -45,9 +33,20 @@ function setupMutationObserver(): void {
 /**
  * Initialize the extension
  */
-function init(): void {
+async function init(): Promise<void> {
+  // Load settings into the singleton store (all downstream modules read from it)
+  await initSettings();
+
   // Initial colorization
   colorizeEditor();
+
+  // React to settings changes: repaint whenever settings mutate
+  subscribeSettings(() => {
+    removeColorization(document.body);
+    if (getSettings().enabled) {
+      colorizeEditor();
+    }
+  });
 
   // Setup mutation observer for dynamic changes
   setupMutationObserver();
@@ -57,9 +56,7 @@ function init(): void {
     document.addEventListener("click", (e) => {
       const target = e.target as HTMLElement;
       if (target.closest(NAV_SELECTOR)) {
-        setTimeout(() => {
-          colorizeEditor();
-        }, 100);
+        setTimeout(() => colorizeEditor(), 100);
       }
     });
   }
@@ -67,7 +64,7 @@ function init(): void {
   // Re-colorize on page load complete
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", () => {
-      setTimeout(() => colorizeEditor(settings), 200);
+      setTimeout(() => colorizeEditor(), 200);
     });
   }
 
@@ -87,12 +84,12 @@ const originalReplaceState = window.history.replaceState;
 
 window.history.pushState = function (...args) {
   const result = originalPushState.apply(this, args);
-  setTimeout(() => colorizeEditor(settings), 100);
+  setTimeout(() => colorizeEditor(), 100);
   return result;
 };
 
 window.history.replaceState = function (...args) {
   const result = originalReplaceState.apply(this, args);
-  setTimeout(() => colorizeEditor(settings), 100);
+  setTimeout(() => colorizeEditor(), 100);
   return result;
 };

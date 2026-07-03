@@ -9,7 +9,7 @@ import {
   COLORIZE_CLASS,
 } from "./domUtils";
 import { GUTTER_ICON_CLASS, updateGutterIcon } from "./gutter";
-import { Settings } from "../types";
+import { getSettings } from "./settingsStore";
 
 /**
  * Remove colorization from a container
@@ -43,7 +43,8 @@ export function removeColorization(container: HTMLElement): void {
 /**
  * Process text nodes to colorize color codes
  */
-function processTextNode(textNode: Text, settings: Settings): void {
+function processTextNode(textNode: Text): void {
+  const settings = getSettings();
   const text = textNode.textContent || "";
 
   // Find color matches
@@ -82,8 +83,8 @@ function processTextNode(textNode: Text, settings: Settings): void {
 /**
  * Process a node and its children to colorize color codes
  */
-export function processNode(node: Node, settings: Settings, depth: number = 0): void {
-  if (!settings.enabled) return;
+export function processNode(node: Node, depth: number = 0): void {
+  if (!getSettings().enabled) return;
   if (depth > 50) return;
 
   // Skip if already colorized
@@ -117,14 +118,14 @@ export function processNode(node: Node, settings: Settings, depth: number = 0): 
 
       // If it's a code container, process it as a unit to handle multi-node matches
       if (element.closest(CODE_CONTAINER_SELECTOR)) {
-        processContainer(element, settings);
+        processContainer(element);
         return;
       }
 
       // Otherwise recurse to find containers or handle non-code areas
       const children = Array.from(element.childNodes);
       for (const child of children) {
-        processNode(child, settings, depth + 1);
+        processNode(child, depth + 1);
       }
       break;
     }
@@ -134,7 +135,7 @@ export function processNode(node: Node, settings: Settings, depth: number = 0): 
       // But some text nodes might be in MAIN_AREA but not in a specific code container
       const parent = node.parentElement;
       if (parent && parent.closest(MAIN_AREA_SELECTOR)) {
-        processTextNode(node as Text, settings);
+        processTextNode(node as Text);
       }
       break;
     }
@@ -144,7 +145,7 @@ export function processNode(node: Node, settings: Settings, depth: number = 0): 
 /**
  * Process a container element as a unit to support color matches spanning multiple text nodes.
  */
-export function processContainer(container: HTMLElement, settings: Settings): void {
+export function processContainer(container: HTMLElement): void {
   // 0. Remove existing colorization to allow clean re-processing
   removeColorization(container);
 
@@ -195,7 +196,7 @@ export function processContainer(container: HTMLElement, settings: Settings): vo
     const nodeMatches = matches.filter((m) => m.startIndex < end && m.endIndex > start);
 
     if (nodeMatches.length > 0) {
-      processTextNodeWithMatches(node, start, nodeMatches, settings);
+      processTextNodeWithMatches(node, start, nodeMatches);
     }
   }
 }
@@ -203,7 +204,8 @@ export function processContainer(container: HTMLElement, settings: Settings): vo
 /**
  * Process a single text node with a list of color matches that overlap it.
  */
-function processTextNodeWithMatches(textNode: Text, nodeStartOffset: number, matches: ColorMatch[], settings: Settings): void {
+function processTextNodeWithMatches(textNode: Text, nodeStartOffset: number, matches: ColorMatch[]): void {
+  const settings = getSettings();
   const text = textNode.textContent || "";
   const nodeEndOffset = nodeStartOffset + text.length;
   const fragment = document.createDocumentFragment();
@@ -250,8 +252,8 @@ function processTextNodeWithMatches(textNode: Text, nodeStartOffset: number, mat
 /**
  * Main colorize function
  */
-export function colorizeEditor(settings: Settings): void {
-  if (!settings.enabled) {
+export function colorizeEditor(): void {
+  if (!getSettings().enabled) {
     removeColorization(document.body);
     return;
   }
@@ -262,10 +264,10 @@ export function colorizeEditor(settings: Settings): void {
   if (codeContainers.length === 0) {
     // Fallback: try to find main content area or just process body
     const mainArea = document.querySelector(MAIN_AREA_SELECTOR);
-    processNode(mainArea || document.body, settings, 0);
+    processNode(mainArea || document.body, 0);
   } else {
     codeContainers.forEach((container) => {
-      processNode(container, settings, 0);
+      processNode(container, 0);
     });
   }
 }
