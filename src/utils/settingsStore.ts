@@ -47,6 +47,12 @@ function applyChanges(changes: Partial<Settings>): void {
     hasChange = true;
   }
 
+  if (changes.showSwatch !== undefined && changes.showSwatch !== current.showSwatch) {
+    current.showSwatch = changes.showSwatch;
+    applied.showSwatch = changes.showSwatch;
+    hasChange = true;
+  }
+
   if (hasChange) {
     for (const l of listeners) l(current, applied);
   }
@@ -61,10 +67,11 @@ export async function initSettings(): Promise<Settings> {
   initialized = true;
 
   current = await new Promise<Settings>((resolve) => {
-    chrome.storage.sync.get(["enabled", "colorizationType"], (result: Partial<Settings>) => {
+    chrome.storage.sync.get(["enabled", "colorizationType", "showSwatch"], (result: Partial<Settings>) => {
       resolve({
         enabled: result.enabled ?? DEFAULT_SETTINGS.enabled,
         colorizationType: result.colorizationType ?? DEFAULT_SETTINGS.colorizationType,
+        showSwatch: result.showSwatch ?? DEFAULT_SETTINGS.showSwatch,
       });
     });
   });
@@ -79,6 +86,10 @@ export async function initSettings(): Promise<Settings> {
 
     if (changes.colorizationType) {
       patch.colorizationType = changes.colorizationType.newValue as ColorizationType;
+    }
+
+    if (changes.showSwatch) {
+      patch.showSwatch = changes.showSwatch.newValue as boolean;
     }
 
     if (Object.keys(patch).length > 0) {

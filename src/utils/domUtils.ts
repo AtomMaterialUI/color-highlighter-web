@@ -3,6 +3,7 @@ import { getContrastColor } from "./colorUtils";
 
 import { getSelectorsForCurrentSite } from "./selectors";
 import { ColorizationType } from "src/types";
+import { getSettings } from "./settingsStore";
 
 /**
  * Registry of selectors for the current site
@@ -135,6 +136,25 @@ export function createColorizedElement(
     e.stopPropagation();
     navigator.clipboard.writeText(colorMatch.hexColor).catch(console.error);
   });
+
+  // Optional inline swatch indicator, rendered once per match (on the first part).
+  if (isFirstPart && getSettings().showSwatch) {
+    const swatch = document.createElement("span");
+    swatch.className = COLOR_SWATCH_CLASS;
+    swatch.setAttribute("aria-hidden", "true");
+    swatch.style.cssText = `
+      display: inline-block;
+      width: 0.8em;
+      height: 0.8em;
+      margin-right: 3px;
+      vertical-align: middle;
+      border-radius: 2px;
+      background-color: ${colorMatch.hexColor};
+      box-shadow: inset 0 0 0 1px rgba(127, 127, 127, 0.4);
+      user-select: none;
+    `;
+    wrapper.appendChild(swatch);
+  }
 
   wrapper.appendChild(textSpan);
 
