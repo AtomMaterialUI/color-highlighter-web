@@ -1,6 +1,13 @@
 import type { ColorMatch } from "./colorDetector";
 import { getContrastColor } from "./colorUtils";
 
+import { getSelectorsForCurrentSite } from "./selectors";
+
+/**
+ * Registry of selectors for the current site
+ */
+const currentSelectors = getSelectorsForCurrentSite();
+
 /**
  * Tags to skip during colorization
  */
@@ -17,77 +24,45 @@ export const SKIP_TAGS = [
 ];
 
 /**
- * Common code editor container selectors
- */
-export const CODE_CONTAINER_SELECTORS = [
-  ".blob-code",
-  ".blob-code-inner",
-  ".blob-wrapper",
-  ".file-content",
-  ".CodeMirror",
-  ".ace_editor",
-  ".monaco-editor",
-  "[id*='editor']",
-  ".hljs",
-  ".react-file-line-contents",
-  ".react-line-contents",
-  ".react-code-text",
-  "[data-testid='code-cell']",
-  ".highlight",
-  ".syntax-highlighted",
-];
-
-/**
- * Element selectors to skip (like line numbers)
- */
-export const SKIP_SELECTORS = [
-  ".blob-num",
-  ".js-line-number",
-  ".react-line-number",
-  ".line-numbers",
-  ".diff-line-num",
-  "[data-line-number]",
-  ".line-number",
-  ".ln",
-  ".td-line-number",
-  ".js-file-line-number",
-  ".diff-line-num-prev",
-  ".diff-line-num-next",
-  ".blob-num-expandable",
-];
-
-/**
- * Selectors for main content areas
- */
-export const MAIN_AREA_SELECTORS = [
-  ".repository-content",
-  "#js-repo-pjax-container",
-  "#repository-container-react",
-  ".content-wrapper",
-  "main",
-  "[role='main']",
-];
-
-/**
  * Selector for common code editor containers
  */
-export const CODE_CONTAINER_SELECTOR = CODE_CONTAINER_SELECTORS.join(", ");
+export const CODE_CONTAINER_SELECTOR = currentSelectors.codeContainers.join(", ");
 
 /**
  * Selector for elements to skip (like line numbers)
  */
-export const SKIP_SELECTOR = SKIP_SELECTORS.join(", ");
+export const SKIP_SELECTOR = currentSelectors.skip.join(", ");
 
 /**
  * Selector for main content areas
  */
-export const MAIN_AREA_SELECTOR = MAIN_AREA_SELECTORS.join(", ");
+export const MAIN_AREA_SELECTOR = currentSelectors.mainAreas.join(", ");
+
+/**
+ * Selector for navigation elements that trigger re-colorization
+ */
+export const NAV_SELECTOR = currentSelectors.navSelectors.join(", ");
 
 /**
  * Class name for color span wrapper
  */
 export const COLORIZE_CLASS = "github-colorize-span";
 export const COLOR_SWATCH_CLASS = "github-colorize-swatch";
+
+/**
+ * Common code editor container selectors (Legacy export for compatibility)
+ */
+export const CODE_CONTAINER_SELECTORS = currentSelectors.codeContainers;
+
+/**
+ * Element selectors to skip (Legacy export for compatibility)
+ */
+export const SKIP_SELECTORS = currentSelectors.skip;
+
+/**
+ * Selectors for main content areas (Legacy export for compatibility)
+ */
+export const MAIN_AREA_SELECTORS = currentSelectors.mainAreas;
 
 /**
  * Create a wrapper span for a color match with background color

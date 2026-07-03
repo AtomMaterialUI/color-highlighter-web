@@ -4,9 +4,10 @@ import {
   SKIP_SELECTOR,
   SKIP_TAGS,
   MAIN_AREA_SELECTOR,
+  NAV_SELECTOR,
   createColorizedElement,
   isAlreadyColorized
-} from "./utils/domUtils";
+} from "./utils";
 
 /**
  * Process text nodes to colorize color codes
@@ -196,18 +197,18 @@ function init(): void {
   // Setup mutation observer for dynamic changes
   setupMutationObserver();
 
-  // Listen for file changes (GitHub specific)
-  document.addEventListener("click", (e) => {
-    const target = e.target as HTMLElement;
-    // Re-colorize when user clicks on file links or tabs
-    if (
-      target.closest(".js-navigation-open, [data-tab-panel], .file-navigation")
-    ) {
-      setTimeout(() => {
-        colorizeEditor();
-      }, 100);
-    }
-  });
+  // Listen for file changes (SPA navigation)
+  if (NAV_SELECTOR) {
+    document.addEventListener("click", (e) => {
+      const target = e.target as HTMLElement;
+      // Re-colorize when user clicks on navigation links
+      if (target.closest(NAV_SELECTOR)) {
+        setTimeout(() => {
+          colorizeEditor();
+        }, 100);
+      }
+    });
+  }
 
   // Re-colorize on page load complete
   if (document.readyState === "loading") {

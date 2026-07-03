@@ -2,3 +2,4 @@
 export * from "./colorDetector"
 export * from "./colorUtils"
 export * from "./domUtils"
+export * from "./selectors"
