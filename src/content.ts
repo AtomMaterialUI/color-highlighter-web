@@ -6,7 +6,8 @@ import {
   MAIN_AREA_SELECTOR,
   NAV_SELECTOR,
   createColorizedElement,
-  isAlreadyColorized
+  isAlreadyColorized,
+  updateGutterIcon
 } from "./utils";
 
 /**
@@ -65,8 +66,25 @@ function processNode(node: Node, depth: number = 0): void {
 
       // Skip line numbers and UI elements
       if (element.closest(SKIP_SELECTOR)) return;
-
       if (SKIP_TAGS.includes(element.tagName.toUpperCase())) return;
+
+      // Special handling for textareas (gutter icon only)
+      if (element.tagName === "TEXTAREA") {
+        const textarea = element as HTMLTextAreaElement;
+        const handler = () => {
+          const matches = detectColors(textarea.value);
+          updateGutterIcon(textarea, matches);
+        };
+
+        // Add listener for live updates if not already added
+        if (!(textarea as any)._hasColorizeListener) {
+          textarea.addEventListener("input", handler);
+          (textarea as any)._hasColorizeListener = true;
+        }
+
+        handler(); // Initial check
+        return;
+      }
 
       // If it's a code container, process it as a unit to handle multi-node matches
       if (element.closest(CODE_CONTAINER_SELECTOR)) {
@@ -134,7 +152,10 @@ function processContainer(container: HTMLElement): void {
   const matches = detectColors(combinedText);
   if (matches.length === 0) return;
 
-  // 3. For each text node, find overlapping matches and apply them
+  // 3. Update gutter icon with the last found color
+  updateGutterIcon(container, matches);
+
+  // 4. For each text node, find overlapping matches and apply them
   // We process text nodes in reverse order to not mess up indices if we were to modify them,
   // but since we replace them completely, order doesn't strictly matter for nodes,
   // but it does for matches within a node.

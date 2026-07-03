@@ -7,6 +7,10 @@ export interface SiteSelectors {
   skip: string[];
   mainAreas: string[];
   navSelectors: string[];
+  gutterRow?: string[];
+  gutters?: string[];
+  commentBox?: string[];
+  commentHeader?: string[];
 }
 
 /**
@@ -27,6 +31,16 @@ const COMMON_SELECTORS: SiteSelectors = {
   skip: [".line-numbers", ".line-number", ".ln", "[data-line-number]"],
   mainAreas: ["main", "[role='main']"],
   navSelectors: [],
+  gutterRow: ["tr"],
+  gutters: [
+    ".line-numbers",
+    ".line-number",
+    ".ln",
+    "[data-line-number]",
+    '[class*="line-number"]',
+    '[class*="ln"]',
+    '[class*="num"]',
+  ],
 };
 
 /**
@@ -58,6 +72,26 @@ const GITHUB_SELECTORS: SiteSelectors = {
     "#repository-container-react",
   ],
   navSelectors: [".js-navigation-open", "[data-tab-panel]", ".file-navigation"],
+  gutterRow: [".react-file-line", "[data-testid='code-cell']", "tr"],
+  gutters: [
+    ".react-line-number",
+    "[data-line-number]",
+    ".blob-num",
+    ".js-line-number",
+    ".diff-line-num",
+    ".blob-num-expandable",
+  ],
+  commentBox: [
+    ".js-comment-box",
+    ".timeline-comment",
+    ".discussion-topic-header",
+    ".js-previewable-comment-form",
+  ],
+  commentHeader: [
+    ".js-comment-header",
+    ".timeline-comment-header",
+    ".tabnav-tabs",
+  ],
 };
 
 /**
@@ -72,6 +106,8 @@ const GITLAB_SELECTORS: SiteSelectors = {
     ".blob-content-holder",
   ],
   navSelectors: [".tree-item-file-name", ".file-title-name", ".nav-link"],
+  gutterRow: ["tr"],
+  gutters: [".line-numbers", ".diff-line-num", ".td-line-number"],
 };
 
 /**
@@ -135,6 +171,30 @@ export function getSelectorsForCurrentSite(): SiteSelectors {
       new Set([
         ...COMMON_SELECTORS.navSelectors,
         ...(siteSpecific.navSelectors || []),
+      ]),
+    ),
+    gutterRow: Array.from(
+      new Set([
+        ...(COMMON_SELECTORS.gutterRow || []),
+        ...(siteSpecific.gutterRow || []),
+      ]),
+    ),
+    gutters: Array.from(
+      new Set([
+        ...(COMMON_SELECTORS.gutters || []),
+        ...(siteSpecific.gutters || []),
+      ]),
+    ),
+    commentBox: Array.from(
+      new Set([
+        ...(COMMON_SELECTORS.commentBox || []),
+        ...(siteSpecific.commentBox || []),
+      ]),
+    ),
+    commentHeader: Array.from(
+      new Set([
+        ...(COMMON_SELECTORS.commentHeader || []),
+        ...(siteSpecific.commentHeader || []),
       ]),
     ),
   };
