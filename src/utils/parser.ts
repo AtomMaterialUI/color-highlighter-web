@@ -7,6 +7,7 @@ import {
   createColorizedElement,
   isAlreadyColorized,
   COLORIZE_CLASS,
+  COLOR_SWATCH_CLASS,
 } from "./domUtils";
 import { GUTTER_ICON_CLASS, updateGutterIcon } from "./gutter";
 import { getSettings } from "./settingsStore";
@@ -21,15 +22,22 @@ export function removeColorization(container: HTMLElement): void {
     const parent = wrapper.parentNode;
     if (!parent) return;
 
-    // Structure: wrapper (span.github-colorize-span) -> textSpan (span) -> textNodes
-    const textSpan = wrapper.firstChild;
-    if (textSpan && textSpan.nodeName === "SPAN") {
+    // Structure: wrapper (span.github-colorize-span) -> [optional swatch span, textSpan] -> textNodes
+    // The swatch (if present) is decorative and must be discarded; we only restore the original text.
+    const children = Array.from(wrapper.childNodes);
+    const textSpan = children.find(
+      (child) => child.nodeType === Node.ELEMENT_NODE && !(child as HTMLElement).classList.contains(COLOR_SWATCH_CLASS),
+    );
+
+    if (textSpan) {
       while (textSpan.firstChild) {
         parent.insertBefore(textSpan.firstChild, wrapper);
       }
     } else {
-      while (wrapper.firstChild) {
-        parent.insertBefore(wrapper.firstChild, wrapper);
+      // Fallback: move any non-swatch children out
+      for (const child of children) {
+        if (child.nodeType === Node.ELEMENT_NODE && (child as HTMLElement).classList.contains(COLOR_SWATCH_CLASS)) continue;
+        parent.insertBefore(child, wrapper);
       }
     }
     parent.removeChild(wrapper);
