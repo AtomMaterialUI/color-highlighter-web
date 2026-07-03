@@ -2,6 +2,7 @@ import type { ColorMatch } from "./colorDetector";
 import { getContrastColor } from "./colorUtils";
 
 import { getSelectorsForCurrentSite } from "./selectors";
+import { ColorizationType } from "src/types";
 
 /**
  * Registry of selectors for the current site
@@ -62,6 +63,7 @@ export function createColorizedElement(
   colorMatch: ColorMatch,
   isFirstPart: boolean = true,
   isLastPart: boolean = true,
+  style: ColorizationType = "background",
 ): HTMLElement {
   const wrapper = document.createElement("span");
   wrapper.className = COLORIZE_CLASS;
@@ -75,16 +77,48 @@ export function createColorizedElement(
   textSpan.title = `Color: ${colorMatch.hexColor} (${colorMatch.format})`;
 
   const contrastColor = getContrastColor(colorMatch.hexColor);
+  let styleCss = "";
+
+  const borderRadius = `${isFirstPart ? "3px" : "0"} ${isLastPart ? "3px" : "0"} ${isLastPart ? "3px" : "0"} ${isFirstPart ? "3px" : "0"}`;
+  const padding = `0 ${isLastPart ? "3px" : "0"} 0 ${isFirstPart ? "3px" : "0"}`;
+  const margin = `0 ${isLastPart ? "1px" : "0"} 0 ${isFirstPart ? "1px" : "0"}`;
+
+  switch (style) {
+    case "foreground":
+      styleCss = `
+        color: ${colorMatch.hexColor};
+        font-weight: bold;
+      `;
+      break;
+    case "border":
+      styleCss = `
+        border: 1px solid ${colorMatch.hexColor};
+        border-radius: ${borderRadius};
+        padding: ${padding};
+        margin: ${margin};
+      `;
+      break;
+    case "underline":
+      styleCss = `
+        border-bottom: 2px groove ${colorMatch.hexColor};
+        padding-bottom: 1px;
+      `;
+      break;
+    case "background":
+    default:
+      styleCss = `
+        background-color: ${colorMatch.hexColor};
+        color: ${contrastColor};
+        border-radius: ${borderRadius};
+        padding: ${padding};
+        margin: ${margin};
+        font-weight: 500;
+      `;
+      break;
+  }
 
   textSpan.style.cssText = `
-    background-color: ${colorMatch.hexColor};
-    color: ${contrastColor};
-    border-radius: ${isFirstPart ? "3px" : "0"} ${isLastPart ? "3px" : "0"} ${
-    isLastPart ? "3px" : "0"
-  } ${isFirstPart ? "3px" : "0"};
-    padding: 0 ${isLastPart ? "3px" : "0"} 0 ${isFirstPart ? "3px" : "0"};
-    margin: 0 ${isLastPart ? "1px" : "0"} 0 ${isFirstPart ? "1px" : "0"};
-    font-weight: 500;
+    ${styleCss}
     cursor: pointer;
   `;
 
@@ -105,23 +139,14 @@ export function createColorizedElement(
 export function isAlreadyColorized(node: Node): boolean {
   if (node.nodeType === Node.ELEMENT_NODE) {
     const element = node as HTMLElement;
-    if (
-      element.classList.contains(COLORIZE_CLASS) ||
-      element.classList.contains(COLOR_SWATCH_CLASS)
-    ) {
+    if (element.classList.contains(COLORIZE_CLASS) || element.classList.contains(COLOR_SWATCH_CLASS)) {
       return true;
     }
   }
 
   // Check if inside a colorized element
-  const parentElement =
-    node.nodeType === Node.ELEMENT_NODE
-      ? (node as HTMLElement)
-      : node.parentElement;
-  return !!(
-    parentElement &&
-    parentElement.closest(`.${COLORIZE_CLASS}, .${COLOR_SWATCH_CLASS}`)
-  );
+  const parentElement = node.nodeType === Node.ELEMENT_NODE ? (node as HTMLElement) : node.parentElement;
+  return !!(parentElement && parentElement.closest(`.${COLORIZE_CLASS}, .${COLOR_SWATCH_CLASS}`));
 }
 
 /**
@@ -157,10 +182,7 @@ export function shouldProcessElement(element: HTMLElement): boolean {
   if (SKIP_TAGS.includes(tagName)) return false;
 
   // Skip elements that are already colorized
-  if (
-    element.classList.contains(COLORIZE_CLASS) ||
-    element.classList.contains(COLOR_SWATCH_CLASS)
-  ) {
+  if (element.classList.contains(COLORIZE_CLASS) || element.classList.contains(COLOR_SWATCH_CLASS)) {
     return false;
   }
 

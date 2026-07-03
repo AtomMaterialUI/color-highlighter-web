@@ -128,11 +128,8 @@ export function getSelectorsForCurrentSite(): SiteSelectors {
 /**
  * Site detection helpers
  */
-export const isGitHub = () =>
-  window.location.hostname.endsWith("github.com") ||
-  window.location.hostname.endsWith("github.dev");
+export const isGitHub = () => window.location.hostname.endsWith("github.com") || window.location.hostname.endsWith("github.dev");
 
 export const isGitLab = () => window.location.hostname.endsWith("gitlab.com");
 
-export const isBitbucket = () =>
-  window.location.hostname.endsWith("bitbucket.org");
+export const isBitbucket = () => window.location.hostname.endsWith("bitbucket.org");

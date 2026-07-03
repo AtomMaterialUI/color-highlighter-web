@@ -40,10 +40,7 @@ export function findGutterElement(container: HTMLElement): HTMLElement | null {
   const parent = container.parentElement;
   if (parent) {
     const sibling = Array.from(parent.children).find(
-      (c) =>
-        c !== container &&
-        (c.classList.contains("line-number") ||
-          /ln|line-num|gutter/i.test(c.className)),
+      (c) => c !== container && (c.classList.contains("line-number") || /ln|line-num|gutter/i.test(c.className)),
     );
     if (sibling) {
       return sibling as HTMLElement;

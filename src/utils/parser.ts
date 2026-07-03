@@ -106,9 +106,9 @@ export function processNode(node: Node, settings: Settings, depth: number = 0): 
         };
 
         // Add listener for live updates if not already added
-        if (!(textarea as any)._hasColorizeListener) {
+        if (!(textarea as HTMLTextAreaElement & { _hasColorizeListener?: boolean })._hasColorizeListener) {
           textarea.addEventListener("input", handler);
-          (textarea as any)._hasColorizeListener = true;
+          (textarea as HTMLTextAreaElement & { _hasColorizeListener?: boolean })._hasColorizeListener = true;
         }
 
         handler(); // Initial check
