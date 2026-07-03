@@ -15,6 +15,7 @@
     "forceConsistentCasingInFileNames": true,
     "jsx": "react-jsx",
     "resolveJsonModule": true,
+    "types": ["chrome"],
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,

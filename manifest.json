@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "description": "Colorize hex codes, RGB, HSL, and color names in online code editors",
   "author": "Your Name",
-  "permissions": ["scripting"],
+  "permissions": ["scripting", "storage"],
   "host_permissions": [
     "https://github.com/*",
     "https://gitlab.com/*",
@@ -28,5 +28,8 @@
       "js": ["content.js"],
       "css": ["styles/global.css"]
     }
-  ]
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  }
 }
