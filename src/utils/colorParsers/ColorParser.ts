@@ -19,17 +19,18 @@ export class ColorParser implements IColorParser {
 
       let colorString = "";
 
-      if (args.length === 4) {
-        // Java/Kotlin/RGBA: new Color(r, g, b, a)
-        const [r, g, b, a] = args;
-        const alpha = normalizeAlpha(a);
-        colorString = `rgba(${r}, ${g}, ${b}, ${alpha})`;
-      } else if (args.length === 3) {
-        // RGB: Color(r, g, b)
-        colorString = `rgb(${args[0]}, ${args[1]}, ${args[2]})`;
-      } else if (args.length === 1) {
-        // Hex/Int/Named: Color(0xFF0000), Color(16711680), Color(RED)
-        colorString = parseSingleArg(args[0]);
+      switch (args.length) {
+        case 4: // Java/Kotlin/RGBA: new Color(r, g, b, a)
+          const [r, g, b, a] = args;
+          const alpha = normalizeAlpha(a);
+          colorString = `rgba(${r}, ${g}, ${b}, ${alpha})`;
+          break;
+        case 3: // RGB: Color(r, g, b)
+          colorString = `rgb(${args[0]}, ${args[1]}, ${args[2]})`;
+          break;
+        case 1: // Hex/Int/Named: Color(0xFF0000), Color(16711680), Color(RED)
+          colorString = parseSingleArg(args[0]);
+          break;
       }
 
       if (colorString) {

@@ -104,9 +104,14 @@ function processContainer(container: HTMLElement): void {
   const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, {
     acceptNode: (node) => {
       // Skip already colorized or skipped elements
-      if (isAlreadyColorized(node)) return NodeFilter.FILTER_REJECT;
-      if (node.parentElement?.closest(SKIP_SELECTOR))
+      if (isAlreadyColorized(node)) {
         return NodeFilter.FILTER_REJECT;
+      }
+
+      if (node.parentElement?.closest(SKIP_SELECTOR)) {
+        return NodeFilter.FILTER_REJECT;
+      }
+
       return NodeFilter.FILTER_ACCEPT;
     },
   });

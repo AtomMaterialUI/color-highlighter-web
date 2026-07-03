@@ -19,17 +19,18 @@ export class ColorUIResourceParser implements IColorParser {
 
       let colorString = "";
 
-      if (args.length === 4) {
-        // RGBA
-        const [r, g, b, a] = args;
-        const alpha = normalizeAlpha(a);
-        colorString = `rgba(${r}, ${g}, ${b}, ${alpha})`;
-      } else if (args.length === 3) {
-        // RGB
-        colorString = `rgb(${args[0]}, ${args[1]}, ${args[2]})`;
-      } else if (args.length === 1) {
-        // Single arg: hex, int, or Color object reference
-        colorString = parseSingleArg(args[0]);
+      switch (args.length) {
+        case 4: // RGBA
+          const [r, g, b, a] = args;
+          const alpha = normalizeAlpha(a);
+          colorString = `rgba(${r}, ${g}, ${b}, ${alpha})`;
+          break;
+        case 3: // RGB
+          colorString = `rgb(${args[0]}, ${args[1]}, ${args[2]})`;
+          break;
+        case 1: // Single arg: hex, int, or Color object reference
+          colorString = parseSingleArg(args[0]);
+          break;
       }
 
       if (colorString) {
