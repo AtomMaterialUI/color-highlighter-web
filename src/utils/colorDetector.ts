@@ -1,159 +1,10 @@
 import chroma from "chroma-js";
+import PREDEFINED_COLORS from "../resources/colors.json";
 
 /**
  * List of CSS named colors that we recognize
  */
-const NAMED_COLORS = new Set([
-  "aliceblue",
-  "antiquewhite",
-  "aqua",
-  "aquamarine",
-  "azure",
-  "beige",
-  "bisque",
-  "black",
-  "blanchedalmond",
-  "blue",
-  "blueviolet",
-  "brown",
-  "burlywood",
-  "cadetblue",
-  "chartreuse",
-  "chocolate",
-  "coral",
-  "cornflowerblue",
-  "cornsilk",
-  "crimson",
-  "cyan",
-  "darkblue",
-  "darkcyan",
-  "darkgoldenrod",
-  "darkgray",
-  "darkgrey",
-  "darkgreen",
-  "darkkhaki",
-  "darkmagenta",
-  "darkolivegreen",
-  "darkorange",
-  "darkorchid",
-  "darkred",
-  "darksalmon",
-  "darkseagreen",
-  "darkslateblue",
-  "darkslategray",
-  "darkslategrey",
-  "darkturquoise",
-  "darkviolet",
-  "deeppink",
-  "deepskyblue",
-  "dimgray",
-  "dimgrey",
-  "dodgerblue",
-  "firebrick",
-  "floralwhite",
-  "forestgreen",
-  "fuchsia",
-  "gainsboro",
-  "ghostwhite",
-  "gold",
-  "goldenrod",
-  "gray",
-  "grey",
-  "green",
-  "greenyellow",
-  "honeydew",
-  "hotpink",
-  "indianred",
-  "indigo",
-  "ivory",
-  "khaki",
-  "lavender",
-  "lavenderblush",
-  "lawngreen",
-  "lemonchiffon",
-  "lightblue",
-  "lightcoral",
-  "lightcyan",
-  "lightgoldenrodyellow",
-  "lightgray",
-  "lightgrey",
-  "lightgreen",
-  "lightpink",
-  "lightsalmon",
-  "lightseagreen",
-  "lightskyblue",
-  "lightslategray",
-  "lightslategrey",
-  "lightsteelblue",
-  "lightyellow",
-  "lime",
-  "limegreen",
-  "linen",
-  "magenta",
-  "maroon",
-  "mediumaquamarine",
-  "mediumblue",
-  "mediumorchid",
-  "mediumpurple",
-  "mediumseagreen",
-  "mediumslateblue",
-  "mediumspringgreen",
-  "mediumturquoise",
-  "mediumvioletred",
-  "midnightblue",
-  "mintcream",
-  "mistyrose",
-  "moccasin",
-  "navajowhite",
-  "navy",
-  "oldlace",
-  "olive",
-  "olivedrab",
-  "orange",
-  "orangered",
-  "orchid",
-  "palegoldenrod",
-  "palegreen",
-  "paleturquoise",
-  "palevioletred",
-  "papayawhip",
-  "peachpuff",
-  "peru",
-  "pink",
-  "plum",
-  "powderblue",
-  "purple",
-  "rebeccapurple",
-  "red",
-  "rosybrown",
-  "royalblue",
-  "saddlebrown",
-  "salmon",
-  "sandybrown",
-  "seagreen",
-  "seashell",
-  "sienna",
-  "silver",
-  "skyblue",
-  "slateblue",
-  "slategray",
-  "slategrey",
-  "snow",
-  "springgreen",
-  "steelblue",
-  "tan",
-  "teal",
-  "thistle",
-  "tomato",
-  "turquoise",
-  "violet",
-  "wheat",
-  "white",
-  "whitesmoke",
-  "yellow",
-  "yellowgreen",
-  "transparent",
-]);
+const NAMED_COLORS = PREDEFINED_COLORS as Record<string, string>;
 
 /**
  * Regex patterns for color detection
@@ -189,6 +40,11 @@ export interface ColorMatch {
  * Try to parse a color string and return its hex representation
  */
 function tryParseColor(colorString: string): string | null {
+  const normalized = colorString.toLowerCase();
+  if (NAMED_COLORS[normalized]) {
+    return NAMED_COLORS[normalized];
+  }
+
   try {
     // Try using chroma-js to parse
     const color = chroma(colorString);
@@ -278,16 +134,16 @@ export function detectColors(text: string): ColorMatch[] {
 
   // Check named colors (be careful to only match complete words in reasonable contexts)
   // We'll be conservative here - only match known color names
-  const words = text.matchAll(/\b([a-z]+)\b/gi);
+  const words = text.matchAll(/\b([a-z_]+)\b/gi);
   for (const wordMatch of words) {
     const word = wordMatch[0].toLowerCase();
     if (
-      NAMED_COLORS.has(word) &&
+      word in NAMED_COLORS &&
       !seenMatches.has(
         `${wordMatch.index}-${wordMatch.index + wordMatch[0].length}`,
       )
     ) {
-      const hex = tryParseColor(word);
+      const hex = NAMED_COLORS[word];
       if (hex) {
         matches.push({
           text: wordMatch[0],
