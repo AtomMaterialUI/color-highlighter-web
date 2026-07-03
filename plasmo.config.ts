@@ -1,29 +1,30 @@
-import type { PlasmoConfig } from "plasmo"
+import type { PlasmoCSConfig } from "plasmo";
 
-export const config: PlasmoConfig = {
-  permissions: ["scripting"],
-  host_permissions: [
+export const config: PlasmoCSConfig = {
+  matches: [
     "https://github.com/*",
     "https://gitlab.com/*",
     "https://gitee.com/*",
     "https://bitbucket.org/*",
     "https://dev.azure.com/*",
     "https://*.github.dev/*",
-    "https://*.gitpod.io/*"
+    "https://*.gitpod.io/*",
   ],
-  content_scripts: [
-    {
-      matches: [
-        "https://github.com/*",
-        "https://gitlab.com/*",
-        "https://gitee.com/*",
-        "https://bitbucket.org/*",
-        "https://dev.azure.com/*",
-        "https://*.github.dev/*",
-        "https://*.gitpod.io/*"
-      ],
-      js: ["content"],
-      css: ["styles/global"]
-    }
-  ]
-}
+  all_frames: true,
+  world: "MAIN",
+  // content_scripts: [
+  //   {
+  //     matches: [
+  //       "https://github.com/*",
+  //       "https://gitlab.com/*",
+  //       "https://gitee.com/*",
+  //       "https://bitbucket.org/*",
+  //       "https://dev.azure.com/*",
+  //       "https://*.github.dev/*",
+  //       "https://*.gitpod.io/*",
+  //     ],
+  //     js: ["content"],
+  //     css: ["styles/global"],
+  //   },
+  // ],
+};
