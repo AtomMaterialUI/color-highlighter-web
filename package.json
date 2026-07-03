@@ -4,11 +4,16 @@
   "version": "0.1.0",
   "description": "Colorize hex codes, RGB, HSL, and color names in online code editors",
   "author": "Your Name",
+  "type": "module",
   "scripts": {
     "dev": "plasmo dev",
     "build": "bash build.sh",
     "package": "bash build.sh && zip -r github-colorize.zip build/",
-    "lint": "eslint --ext .js,.jsx,.ts,.tsx ."
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "oxlint": "oxlint .",
+    "oxfmt": "oxfmt ."
   },
   "dependencies": {
     "@radix-ui/react-icons": "^1.3.2",
@@ -19,14 +24,26 @@
     "react-dom": "^19.2.7"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@oxfmt/binding-darwin-arm64": "^0.57.0",
+    "@oxlint/binding-darwin-arm64": "^1.72.0",
     "@types/chroma-js": "^3.1.2",
     "@types/chrome": "^0.2.2",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
+    "@typescript-eslint/eslint-plugin": "^8.62.1",
+    "@typescript-eslint/parser": "^8.62.1",
     "eslint": "^10.6.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "globals": "^17.7.0",
+    "oxfmt": "^0.57.0",
+    "oxlint": "^1.72.0",
     "plasmo": "latest",
     "prettier": "^3.9.4",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.62.1"
   },
   "manifest": {
     "permissions": [
