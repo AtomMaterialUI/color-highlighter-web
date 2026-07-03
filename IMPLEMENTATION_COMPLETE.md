@@ -1,4 +1,4 @@
-# ✅ GitHub Colorize - Implementation Complete
+# ✅ Color Highlighter - Implementation Complete
 
 ## Project Successfully Created! 🎉
 
@@ -8,31 +8,32 @@ Your Chrome Extension for colorizing color codes in online code editors is compl
 
 ## What Was Built
 
-A fully functional **Chrome Extension** that automatically detects and visualizes color codes in web-based code editors with:
+A fully functional **Chrome Extension** that automatically detects and visualizes color codes in web-based code editors
+with:
 
 - ✨ **Automatic Color Detection** for:
-  - Hex codes (#fff, #ffffff, #ffff, #ffffffff)
-  - RGB/RGBA (rgb(255, 255, 255), rgba(255, 255, 255, 0.5))
-  - HSL/HSLA (hsl(0, 100%, 50%), hsla(0, 100%, 50%, 0.5))
-  - Named CSS colors (red, blue, transparent, etc.)
+    - Hex codes (#fff, #ffffff, #ffff, #ffffffff)
+    - RGB/RGBA (rgb(255, 255, 255), rgba(255, 255, 255, 0.5))
+    - HSL/HSLA (hsl(0, 100%, 50%), hsla(0, 100%, 50%, 0.5))
+    - Named CSS colors (red, blue, transparent, etc.)
 
 - 🎨 **Visual Indicators**:
-  - Colored square swatches next to detected colors
-  - Dotted underlines in the detected color
-  - Hover effects and styling
+    - Colored square swatches next to detected colors
+    - Dotted underlines in the detected color
+    - Hover effects and styling
 
 - 🖱️ **Interactive Features**:
-  - Click color swatches to copy hex codes
-  - Tooltip showing color values
-  - Dark mode support
+    - Click color swatches to copy hex codes
+    - Tooltip showing color values
+    - Dark mode support
 
 - 🌐 **Supported Platforms**:
-  - GitHub & GitHub Codespaces
-  - GitLab
-  - Gitee
-  - Bitbucket
-  - Azure DevOps
-  - GitPod
+    - GitHub & GitHub Codespaces
+    - GitLab
+    - Gitee
+    - Bitbucket
+    - Azure DevOps
+    - GitPod
 
 ---
 
@@ -75,24 +76,28 @@ github-colorize/
 ## Key Features Implemented
 
 ### 1️⃣ Advanced Color Detection
+
 - **Multiple Format Support**: Hex, RGB, RGBA, HSL, HSLA, Named colors
 - **Regex-based Matching**: Efficient pattern recognition
 - **Validation**: Uses chroma-js for robust color parsing
 - **Deduplication**: Prevents overlapping matches
 
 ### 2️⃣ Smart DOM Processing
+
 - **MutationObserver**: Handles dynamic content changes
 - **Selective Processing**: Only processes code editor elements
 - **Performance Optimized**: Limits recursion depth, skips processed elements
 - **SPA Support**: Handles client-side navigation
 
 ### 3️⃣ Modular Architecture
+
 - **Separation of Concerns**: Detection, DOM, utilities in separate files
 - **Type-Safe**: Full TypeScript with strict checking
 - **No Framework UI**: Pure vanilla JavaScript for minimal overhead
 - **Reusable Utilities**: Each module can be used independently
 
 ### 4️⃣ Production Ready
+
 - **Optimized Build**: ~7-8 KB total size
 - **Zero External Calls**: Works entirely offline
 - **Privacy Focused**: No data collection
@@ -110,12 +115,12 @@ github-colorize/
    ```
 
 2. **Enable Developer Mode**
-   - Toggle "Developer mode" in top-right corner
+    - Toggle "Developer mode" in top-right corner
 
 3. **Load Unpacked**
-   - Click "Load unpacked"
-   - Select the `build/` folder from this project
-   - Done! ✅
+    - Click "Load unpacked"
+    - Select the `build/` folder from this project
+    - Done! ✅
 
 ---
 
@@ -158,6 +163,7 @@ pnpm lint
 ## Architecture Highlights
 
 ### Content Script Pipeline
+
 ```
 Page Loads
    ↓
@@ -175,6 +181,7 @@ Recolorize on demand
 ```
 
 ### Color Detection Flow
+
 ```
 Text Found → Regex Match → Chroma Validation → Dedup Check → Visual Element
    ↓            ↓              ↓                  ↓            ↓
@@ -230,16 +237,19 @@ While the extension is production-ready, here are potential improvements:
 ## Important Notes
 
 ### Performance
+
 - Optimized for files up to 10,000 lines
 - Larger files may show slight lag on first load
 - MutationObserver handles incremental updates efficiently
 
 ### Compatibility
+
 - Requires Chrome 88+
 - Works on all Chromium-based browsers
 - Manifest V3 (latest Chrome extension standard)
 
 ### Privacy
+
 - ✅ No data collection
 - ✅ No tracking
 - ✅ No external API calls
@@ -260,23 +270,23 @@ While the extension is production-ready, here are potential improvements:
 ## Next Steps
 
 1. **Load the Extension**
-   - Follow [SETUP_GUIDE.md](./SETUP_GUIDE.md)
-   - Load from `build/` directory in Chrome
+    - Follow [SETUP_GUIDE.md](./SETUP_GUIDE.md)
+    - Load from `build/` directory in Chrome
 
 2. **Test It Out**
-   - Visit GitHub, GitLab, or other supported sites
-   - Edit any file with color codes
-   - Verify colors are detected and displayed
+    - Visit GitHub, GitLab, or other supported sites
+    - Edit any file with color codes
+    - Verify colors are detected and displayed
 
 3. **Explore Features**
-   - Try different color formats
-   - Click swatches to copy colors
-   - Test on different platforms
+    - Try different color formats
+    - Click swatches to copy colors
+    - Test on different platforms
 
 4. **Customize (Optional)**
-   - Modify styling in `src/styles/global.css`
-   - Adjust detection patterns in `src/utils/colorDetector.ts`
-   - Rebuild with `pnpm build`
+    - Modify styling in `src/styles/global.css`
+    - Adjust detection patterns in `src/utils/colorDetector.ts`
+    - Rebuild with `pnpm build`
 
 ---
 
@@ -307,15 +317,15 @@ While the extension is production-ready, here are potential improvements:
 
 ## Quick Reference
 
-| Aspect | Details |
-|--------|---------|
-| **Extension Type** | Chrome Extension Manifest V3 |
-| **Primary Language** | TypeScript (transpiled to JavaScript) |
-| **Color Library** | chroma-js v2.6.0 |
-| **Build Tool** | TypeScript + Custom Build Script |
-| **Installation Location** | chrome://extensions |
-| **Load Source** | Unpacked from `build/` directory |
-| **Permissions Required** | Scripting + Host permissions |
+| Aspect                    | Details                               |
+|---------------------------|---------------------------------------|
+| **Extension Type**        | Chrome Extension Manifest V3          |
+| **Primary Language**      | TypeScript (transpiled to JavaScript) |
+| **Color Library**         | chroma-js v2.6.0                      |
+| **Build Tool**            | TypeScript + Custom Build Script      |
+| **Installation Location** | chrome://extensions                   |
+| **Load Source**           | Unpacked from `build/` directory      |
+| **Permissions Required**  | Scripting + Host permissions          |
 
 ---
 

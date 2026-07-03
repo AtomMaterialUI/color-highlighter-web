@@ -1,29 +1,30 @@
-# GitHub Colorize
+# Color Highlighter
 
-A Chrome Extension that colorizes color codes, RGB values, HSL values, and color names when editing files in online code editors.
+A Chrome Extension that colorizes color codes, RGB values, HSL values, and color names when editing files in online code
+editors.
 
 ## Features
 
 - **Color Detection**: Automatically detects and colorizes:
-  - Hex codes (#fff, #ffffff, #ffff, #ffffffff)
-  - RGB/RGBA colors (rgb(255, 255, 255), rgba(255, 255, 255, 0.5))
-  - HSL/HSLA colors (hsl(0, 100%, 50%), hsla(0, 100%, 50%, 0.5))
-  - Named CSS colors (red, blue, transparent, etc.)
+    - Hex codes (#fff, #ffffff, #ffff, #ffffffff)
+    - RGB/RGBA colors (rgb(255, 255, 255), rgba(255, 255, 255, 0.5))
+    - HSL/HSLA colors (hsl(0, 100%, 50%), hsla(0, 100%, 50%, 0.5))
+    - Named CSS colors (red, blue, transparent, etc.)
 
 - **Visual Indicators**: Each detected color displays:
-  - A colored square swatch next to the color code
-  - A dotted underline in the detected color for easy identification
+    - A colored square swatch next to the color code
+    - A dotted underline in the detected color for easy identification
 
 - **Interactive**: Click on color swatches to copy the hex code to your clipboard
 
 - **Supported Platforms**:
-  - GitHub (github.com)
-  - GitHub Codespaces
-  - GitPod
-  - GitLab (gitlab.com)
-  - Gitee (gitee.com)
-  - Bitbucket (bitbucket.org)
-  - Azure DevOps (dev.azure.com)
+    - GitHub (github.com)
+    - GitHub Codespaces
+    - GitPod
+    - GitLab (gitlab.com)
+    - Gitee (gitee.com)
+    - Bitbucket (bitbucket.org)
+    - Azure DevOps (dev.azure.com)
 
 ## Installation
 
@@ -39,11 +40,11 @@ A Chrome Extension that colorizes color codes, RGB values, HSL values, and color
    pnpm build
    ```
 4. Load in Chrome:
-   - Open `chrome://extensions`
-   - Enable "Developer mode" (toggle in top right)
-   - Click "Load unpacked"
-   - Select the `build` directory from this project
-   - The extension should now appear in your Extensions menu
+    - Open `chrome://extensions`
+    - Enable "Developer mode" (toggle in top right)
+    - Click "Load unpacked"
+    - Select the `build` directory from this project
+    - The extension should now appear in your Extensions menu
 
 ### Development with Hot Reload
 
@@ -88,6 +89,7 @@ src/
 ## Configuration
 
 The extension is configured to run on:
+
 - All code editor pages on supported platforms
 - Text editing contexts across various web-based code editors
 
@@ -103,6 +105,7 @@ You can modify `plasmo.config.ts` to add or remove host permissions for addition
 ## Privacy
 
 This extension:
+
 - Works entirely locally in your browser
 - Does not collect or send any data
 - Does not have access to your actual code content beyond visual processing
@@ -111,12 +114,14 @@ This extension:
 ## Troubleshooting
 
 ### Colors not showing up
+
 1. Ensure the extension is enabled in `chrome://extensions`
 2. Try refreshing the page
 3. Check that you're on a supported platform
 4. Open the browser console (F12) to check for any errors
 
 ### Performance issues
+
 1. Disable the extension if processing becomes slow
 2. The extension is optimized for files up to ~10,000 lines
 3. Try disabling on pages with very large code blocks
@@ -149,4 +154,5 @@ MIT
 
 ## Support
 
-If you encounter any issues or have suggestions, please open an issue on GitHub or visit the GitHub Colorize repository.
+If you encounter any issues or have suggestions, please open an issue on GitHub or visit the Color Highlighter
+repository.

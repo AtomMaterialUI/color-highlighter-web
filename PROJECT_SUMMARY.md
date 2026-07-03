@@ -1,8 +1,11 @@
-# GitHub Colorize - Project Summary
+# Color Highlighter - Project Summary
 
 ## Overview
 
-GitHub Colorize is a Chrome Extension built with the Plasmo Framework that automatically detects and visualizes color codes in online code editors. The extension displays colored squares next to detected colors (hex, RGB, HSL, and named colors) and provides an intuitive interface for developers working with colors across GitHub, GitLab, and other platforms.
+Color Highlighter is a Chrome Extension built with the Plasmo Framework that automatically detects and visualizes color
+codes in online code editors. The extension displays colored squares next to detected colors (hex, RGB, HSL, and named
+colors) and provides an intuitive interface for developers working with colors across GitHub, GitLab, and other
+platforms.
 
 ## Project Structure
 
@@ -32,6 +35,7 @@ github-colorize/
 ## Key Components
 
 ### 1. Content Script (`src/content.ts`)
+
 - Main entry point that runs on matching websites
 - Processes DOM nodes to find and colorize color codes
 - Sets up MutationObserver to handle dynamically added content
@@ -39,33 +43,37 @@ github-colorize/
 - Debounces colorization for performance
 
 ### 2. Color Detection (`src/utils/colorDetector.ts`)
+
 - **Detects multiple color formats:**
-  - Hex: `#fff`, `#ffffff`, `#ffff`, `#ffffffff`
-  - RGB/RGBA: `rgb(255, 255, 255)`, `rgba(255, 255, 255, 0.5)`
-  - HSL/HSLA: `hsl(0, 100%, 50%)`, `hsla(0, 100%, 50%, 0.5)`
-  - Named: 148 CSS color names (red, blue, transparent, etc.)
+    - Hex: `#fff`, `#ffffff`, `#ffff`, `#ffffffff`
+    - RGB/RGBA: `rgb(255, 255, 255)`, `rgba(255, 255, 255, 0.5)`
+    - HSL/HSLA: `hsl(0, 100%, 50%)`, `hsla(0, 100%, 50%, 0.5)`
+    - Named: 148 CSS color names (red, blue, transparent, etc.)
 - Uses regex patterns for efficient matching
 - Validates colors with chroma-js
 - Prevents duplicate matches
 
 ### 3. DOM Utilities (`src/utils/domUtils.ts`)
+
 - **Creates visual elements:**
-  - Colored text with dotted underline
-  - Small rounded color swatches
-  - Hover effects and interactivity
+    - Colored text with dotted underline
+    - Small rounded color swatches
+    - Hover effects and interactivity
 - **Checks for:**
-  - Already-colorized elements (avoids reprocessing)
-  - Code editor containers
-  - Safe nodes to process (skips scripts, styles, etc.)
+    - Already-colorized elements (avoids reprocessing)
+    - Code editor containers
+    - Safe nodes to process (skips scripts, styles, etc.)
 - Click handler for copying hex codes to clipboard
 
 ### 4. Color Utilities (`src/utils/colorUtils.ts`)
+
 - Hex ↔ RGB/HSL conversion
 - Luminance calculation for contrast
 - Color validation and normalization
 - Comprehensive color information retrieval
 
 ### 5. Styling (`src/styles/global.css`)
+
 - Inline styles for color swatches
 - Hover effects and transitions
 - Dark mode support
@@ -74,10 +82,12 @@ github-colorize/
 ## Technologies & Dependencies
 
 ### Runtime Dependencies
+
 - **chroma-js** (v2.6.0): Color parsing and validation
 - **polished** (v4.3.1): Color utility functions (prepared for future use)
 
 ### Development Dependencies
+
 - **TypeScript** (v5.9.3): Type-safe development
 - **Plasmo** (v0.90.5): Browser extension framework (used for config)
 - **ESLint** (v8.57.1): Code quality
@@ -86,15 +96,17 @@ github-colorize/
 ## Build System
 
 ### Production Build
+
 - **Method**: TypeScript compilation + manual bundling
 - **Output**: `build/` directory containing:
-  - `manifest.json`: Extension configuration
-  - `content.js`: Main script with all utilities bundled
-  - `styles/global.css`: Styling
-  - `utils/*.js`: Compiled utility modules
-  - TypeScript declaration files (.d.ts) for development
+    - `manifest.json`: Extension configuration
+    - `content.js`: Main script with all utilities bundled
+    - `styles/global.css`: Styling
+    - `utils/*.js`: Compiled utility modules
+    - TypeScript declaration files (.d.ts) for development
 
 ### Build Process
+
 ```bash
 pnpm build  # Runs build.sh
   ├─ TypeScript compilation (src/ → build/)
@@ -106,15 +118,15 @@ pnpm build  # Runs build.sh
 
 The extension runs on these popular code editors and platforms:
 
-| Platform | URL Pattern | Support |
-|----------|-----------|---------|
-| GitHub | `github.com/*` | ✅ Full |
-| GitHub Codespaces | `*.github.dev/*` | ✅ Full |
-| GitPod | `*.gitpod.io/*` | ✅ Full |
-| GitLab | `gitlab.com/*` | ✅ Full |
-| Gitee | `gitee.com/*` | ✅ Full |
-| Bitbucket | `bitbucket.org/*` | ✅ Full |
-| Azure DevOps | `dev.azure.com/*` | ✅ Full |
+| Platform          | URL Pattern       | Support |
+|-------------------|-------------------|---------|
+| GitHub            | `github.com/*`    | ✅ Full  |
+| GitHub Codespaces | `*.github.dev/*`  | ✅ Full  |
+| GitPod            | `*.gitpod.io/*`   | ✅ Full  |
+| GitLab            | `gitlab.com/*`    | ✅ Full  |
+| Gitee             | `gitee.com/*`     | ✅ Full  |
+| Bitbucket         | `bitbucket.org/*` | ✅ Full  |
+| Azure DevOps      | `dev.azure.com/*` | ✅ Full  |
 
 ## Performance Optimization
 
@@ -134,6 +146,7 @@ The extension uses a multi-stage approach:
 4. **Sorting**: Organizes matches by position for proper replacement
 
 Example flow:
+
 ```
 Raw text → Regex patterns → Color validation → Deduplication → Sorted results
    ↓            ↓                  ↓                ↓              ↓
@@ -189,20 +202,20 @@ Replace Original Text with Fragment
 ## Testing Recommendations
 
 1. **Manual Testing on Each Platform**:
-   - Navigate to each supported platform
-   - Create/edit files with various color formats
-   - Verify colors are correctly detected and displayed
+    - Navigate to each supported platform
+    - Create/edit files with various color formats
+    - Verify colors are correctly detected and displayed
 
 2. **Edge Cases**:
-   - Very long files (>10,000 lines)
-   - Nested color mentions
-   - Mixed color formats
-   - Light vs dark themes
+    - Very long files (>10,000 lines)
+    - Nested color mentions
+    - Mixed color formats
+    - Light vs dark themes
 
 3. **Performance**:
-   - Large file handling
-   - Rapid content changes (live updates)
-   - Memory usage with extended browsing
+    - Large file handling
+    - Rapid content changes (live updates)
+    - Memory usage with extended browsing
 
 ## Future Enhancement Possibilities
 
