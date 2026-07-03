@@ -6,7 +6,7 @@ export class NamedParser implements IColorParser {
   getMatches(text: string): ColorMatch[] {
     const matches: ColorMatch[] = [];
     const words = text.matchAll(/\b([a-z_]+)\b/gi);
-    
+
     for (const wordMatch of words) {
       const word = wordMatch[0];
       const hex = getNamedColor(word);

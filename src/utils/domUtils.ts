@@ -11,16 +11,7 @@ const currentSelectors = getSelectorsForCurrentSite();
 /**
  * Tags to skip during colorization
  */
-export const SKIP_TAGS = [
-  "SCRIPT",
-  "STYLE",
-  "NOSCRIPT",
-  "META",
-  "LINK",
-  "TITLE",
-  "HEAD",
-  "INPUT",
-];
+export const SKIP_TAGS = ["SCRIPT", "STYLE", "NOSCRIPT", "META", "LINK", "TITLE", "HEAD", "INPUT"];
 
 /**
  * Selector for common code editor containers
@@ -64,7 +55,7 @@ export const SKIP_SELECTORS = currentSelectors.skip;
 export const MAIN_AREA_SELECTORS = currentSelectors.mainAreas;
 
 /**
- * Create a wrapper span for a color match with background color.
+ * Create a wrapper span for a color match with different styles.
  * Supports partial matches for multi-node highlighting.
  */
 export function createColorizedElement(

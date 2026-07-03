@@ -6,12 +6,9 @@ import {
   MAIN_AREA_SELECTOR,
   createColorizedElement,
   isAlreadyColorized,
-  COLORIZE_CLASS
+  COLORIZE_CLASS,
 } from "./domUtils";
-import {
-  GUTTER_ICON_CLASS,
-  updateGutterIcon
-} from "./gutter";
+import { GUTTER_ICON_CLASS, updateGutterIcon } from "./gutter";
 import { Settings } from "../types";
 
 /**
@@ -63,18 +60,11 @@ function processTextNode(textNode: Text, settings: Settings): void {
   for (const match of colorMatches) {
     // Add text before this match
     if (match.startIndex > lastIndex) {
-      fragment.appendChild(
-        document.createTextNode(text.substring(lastIndex, match.startIndex)),
-      );
+      fragment.appendChild(document.createTextNode(text.substring(lastIndex, match.startIndex)));
     }
 
     // Add colorized element
-    const colorizedElement = createColorizedElement(
-      match,
-      true,
-      true,
-      settings.colorizationType,
-    );
+    const colorizedElement = createColorizedElement(match, true, true, settings.colorizationType);
     fragment.appendChild(colorizedElement);
 
     lastIndex = match.endIndex;
@@ -100,7 +90,7 @@ export function processNode(node: Node, settings: Settings, depth: number = 0): 
   if (isAlreadyColorized(node)) return;
 
   switch (node.nodeType) {
-    case Node.ELEMENT_NODE:
+    case Node.ELEMENT_NODE: {
       const element = node as HTMLElement;
 
       // Skip line numbers and UI elements
@@ -137,7 +127,8 @@ export function processNode(node: Node, settings: Settings, depth: number = 0): 
         processNode(child, settings, depth + 1);
       }
       break;
-    case Node.TEXT_NODE:
+    }
+    case Node.TEXT_NODE: {
       // We only reach here if we're not inside a code container yet
       // because CODE_CONTAINER_SELECTOR check in ELEMENT_NODE would have triggered processContainer
       // But some text nodes might be in MAIN_AREA but not in a specific code container
@@ -146,6 +137,7 @@ export function processNode(node: Node, settings: Settings, depth: number = 0): 
         processTextNode(node as Text, settings);
       }
       break;
+    }
   }
 }
 
@@ -200,9 +192,7 @@ export function processContainer(container: HTMLElement, settings: Settings): vo
   // 4. For each text node, find overlapping matches and apply them
   for (let i = textNodes.length - 1; i >= 0; i--) {
     const { node, start, end } = textNodes[i];
-    const nodeMatches = matches.filter(
-      (m) => m.startIndex < end && m.endIndex > start,
-    );
+    const nodeMatches = matches.filter((m) => m.startIndex < end && m.endIndex > start);
 
     if (nodeMatches.length > 0) {
       processTextNodeWithMatches(node, start, nodeMatches, settings);
@@ -213,36 +203,22 @@ export function processContainer(container: HTMLElement, settings: Settings): vo
 /**
  * Process a single text node with a list of color matches that overlap it.
  */
-function processTextNodeWithMatches(
-  textNode: Text,
-  nodeStartOffset: number,
-  matches: ColorMatch[],
-  settings: Settings,
-): void {
+function processTextNodeWithMatches(textNode: Text, nodeStartOffset: number, matches: ColorMatch[], settings: Settings): void {
   const text = textNode.textContent || "";
   const nodeEndOffset = nodeStartOffset + text.length;
   const fragment = document.createDocumentFragment();
   let lastInNodeIndex = 0;
 
   // Sort matches by start index to process them in order
-  const sortedMatches = [...matches].sort(
-    (a, b) => a.startIndex - b.startIndex,
-  );
+  const sortedMatches = [...matches].sort((a, b) => a.startIndex - b.startIndex);
 
   for (const match of sortedMatches) {
     const matchStartInNode = Math.max(0, match.startIndex - nodeStartOffset);
-    const matchEndInNode = Math.min(
-      text.length,
-      match.endIndex - nodeStartOffset,
-    );
+    const matchEndInNode = Math.min(text.length, match.endIndex - nodeStartOffset);
 
     // Add text before the match part
     if (matchStartInNode > lastInNodeIndex) {
-      fragment.appendChild(
-        document.createTextNode(
-          text.substring(lastInNodeIndex, matchStartInNode),
-        ),
-      );
+      fragment.appendChild(document.createTextNode(text.substring(lastInNodeIndex, matchStartInNode)));
     }
 
     // Add colorized match part
@@ -265,9 +241,7 @@ function processTextNodeWithMatches(
 
   // Add remaining text
   if (lastInNodeIndex < text.length) {
-    fragment.appendChild(
-      document.createTextNode(text.substring(lastInNodeIndex)),
-    );
+    fragment.appendChild(document.createTextNode(text.substring(lastInNodeIndex)));
   }
 
   textNode.parentNode?.replaceChild(fragment, textNode);

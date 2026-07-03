@@ -6,7 +6,7 @@ export { ColorMatch };
  * Detect all color codes/names in a given text
  */
 export function detectColors(text: string): ColorMatch[] {
-  let allMatches: ColorMatch[] = [];
+  const allMatches: ColorMatch[] = [];
 
   for (const parser of COLOR_PARSERS) {
     try {
@@ -22,7 +22,7 @@ export function detectColors(text: string): ColorMatch[] {
     if (a.startIndex !== b.startIndex) {
       return a.startIndex - b.startIndex;
     }
-    return (b.endIndex - b.startIndex) - (a.endIndex - a.startIndex);
+    return b.endIndex - b.startIndex - (a.endIndex - a.startIndex);
   });
 
   const matches: ColorMatch[] = [];
@@ -42,13 +42,7 @@ export function detectColors(text: string): ColorMatch[] {
 /**
  * Check if a given text position is part of a color match
  */
-export function isColorMatch(
-  text: string,
-  position: number,
-): ColorMatch | null {
+export function isColorMatch(text: string, position: number): ColorMatch | null {
   const colors = detectColors(text);
-  return (
-    colors.find((c) => position >= c.startIndex && position < c.endIndex) ||
-    null
-  );
+  return colors.find((c) => position >= c.startIndex && position < c.endIndex) || null;
 }

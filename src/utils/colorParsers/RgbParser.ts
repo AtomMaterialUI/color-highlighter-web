@@ -2,8 +2,7 @@ import { IColorParser, ColorMatch, tryParseColor } from "./types";
 
 export class RgbParser implements IColorParser {
   id = "rgb";
-  private pattern =
-    /rgba?\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*([\d.]+)\s*)?\)/gi;
+  private pattern = /rgba?\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*(?:,\s*([\d.]+)\s*)?\)/gi;
 
   getMatches(text: string): ColorMatch[] {
     const matches: ColorMatch[] = [];

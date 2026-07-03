@@ -32,15 +32,7 @@ const COMMON_SELECTORS: SiteSelectors = {
   mainAreas: ["main", "[role='main']"],
   navSelectors: [],
   gutterRow: ["tr"],
-  gutters: [
-    ".line-numbers",
-    ".line-number",
-    ".ln",
-    "[data-line-number]",
-    '[class*="line-number"]',
-    '[class*="ln"]',
-    '[class*="num"]',
-  ],
+  gutters: [".line-numbers", ".line-number", ".ln", "[data-line-number]", '[class*="line-number"]', '[class*="ln"]', '[class*="num"]'],
 };
 
 /**
@@ -66,32 +58,12 @@ const GITHUB_SELECTORS: SiteSelectors = {
     ".diff-line-num-next",
     ".blob-num-expandable",
   ],
-  mainAreas: [
-    ".repository-content",
-    "#js-repo-pjax-container",
-    "#repository-container-react",
-  ],
+  mainAreas: [".repository-content", "#js-repo-pjax-container", "#repository-container-react"],
   navSelectors: [".js-navigation-open", "[data-tab-panel]", ".file-navigation"],
   gutterRow: [".react-file-line", "[data-testid='code-cell']", "tr"],
-  gutters: [
-    ".react-line-number",
-    "[data-line-number]",
-    ".blob-num",
-    ".js-line-number",
-    ".diff-line-num",
-    ".blob-num-expandable",
-  ],
-  commentBox: [
-    ".js-comment-box",
-    ".timeline-comment",
-    ".discussion-topic-header",
-    ".js-previewable-comment-form",
-  ],
-  commentHeader: [
-    ".js-comment-header",
-    ".timeline-comment-header",
-    ".tabnav-tabs",
-  ],
+  gutters: [".react-line-number", "[data-line-number]", ".blob-num", ".js-line-number", ".diff-line-num", ".blob-num-expandable"],
+  commentBox: [".js-comment-box", ".timeline-comment", ".discussion-topic-header", ".js-previewable-comment-form"],
+  commentHeader: [".js-comment-header", ".timeline-comment-header", ".tabnav-tabs"],
 };
 
 /**
@@ -100,11 +72,7 @@ const GITHUB_SELECTORS: SiteSelectors = {
 const GITLAB_SELECTORS: SiteSelectors = {
   codeContainers: [".file-content", ".js-syntax-highlight"],
   skip: [".td-line-number", ".line-numbers", ".diff-line-num"],
-  mainAreas: [
-    ".content-wrapper",
-    ".tree-content-holder",
-    ".blob-content-holder",
-  ],
+  mainAreas: [".content-wrapper", ".tree-content-holder", ".blob-content-holder"],
   navSelectors: [".tree-item-file-name", ".file-title-name", ".nav-link"],
   gutterRow: ["tr"],
   gutters: [".line-numbers", ".diff-line-num", ".td-line-number"],
@@ -114,11 +82,7 @@ const GITLAB_SELECTORS: SiteSelectors = {
  * Bitbucket specific selectors
  */
 const BITBUCKET_SELECTORS: SiteSelectors = {
-  codeContainers: [
-    ".bitbucket-textarea-wrapper",
-    ".file-content",
-    ".CodeMirror",
-  ],
+  codeContainers: [".bitbucket-textarea-wrapper", ".file-content", ".CodeMirror"],
   skip: [".line-numbers", ".line-number-wrapper"],
   mainAreas: ["#source-view", "#repo-content"],
   navSelectors: [".file-link", ".aui-nav-item"],
@@ -145,58 +109,19 @@ export function getSelectorsForCurrentSite(): SiteSelectors {
   const hostname = window.location.hostname;
 
   // Find the best match in the registry
-  let siteKey = Object.keys(SITE_REGISTRY).find((key) =>
-    hostname.endsWith(key),
-  );
+  const siteKey = Object.keys(SITE_REGISTRY).find((key) => hostname.endsWith(key));
   const siteSpecific = siteKey ? SITE_REGISTRY[siteKey] : {};
 
   // Merge common and site-specific selectors, removing duplicates
   return {
-    codeContainers: Array.from(
-      new Set([
-        ...COMMON_SELECTORS.codeContainers,
-        ...(siteSpecific.codeContainers || []),
-      ]),
-    ),
-    skip: Array.from(
-      new Set([...COMMON_SELECTORS.skip, ...(siteSpecific.skip || [])]),
-    ),
-    mainAreas: Array.from(
-      new Set([
-        ...COMMON_SELECTORS.mainAreas,
-        ...(siteSpecific.mainAreas || []),
-      ]),
-    ),
-    navSelectors: Array.from(
-      new Set([
-        ...COMMON_SELECTORS.navSelectors,
-        ...(siteSpecific.navSelectors || []),
-      ]),
-    ),
-    gutterRow: Array.from(
-      new Set([
-        ...(COMMON_SELECTORS.gutterRow || []),
-        ...(siteSpecific.gutterRow || []),
-      ]),
-    ),
-    gutters: Array.from(
-      new Set([
-        ...(COMMON_SELECTORS.gutters || []),
-        ...(siteSpecific.gutters || []),
-      ]),
-    ),
-    commentBox: Array.from(
-      new Set([
-        ...(COMMON_SELECTORS.commentBox || []),
-        ...(siteSpecific.commentBox || []),
-      ]),
-    ),
-    commentHeader: Array.from(
-      new Set([
-        ...(COMMON_SELECTORS.commentHeader || []),
-        ...(siteSpecific.commentHeader || []),
-      ]),
-    ),
+    codeContainers: Array.from(new Set([...COMMON_SELECTORS.codeContainers, ...(siteSpecific.codeContainers || [])])),
+    skip: Array.from(new Set([...COMMON_SELECTORS.skip, ...(siteSpecific.skip || [])])),
+    mainAreas: Array.from(new Set([...COMMON_SELECTORS.mainAreas, ...(siteSpecific.mainAreas || [])])),
+    navSelectors: Array.from(new Set([...COMMON_SELECTORS.navSelectors, ...(siteSpecific.navSelectors || [])])),
+    gutterRow: Array.from(new Set([...(COMMON_SELECTORS.gutterRow || []), ...(siteSpecific.gutterRow || [])])),
+    gutters: Array.from(new Set([...(COMMON_SELECTORS.gutters || []), ...(siteSpecific.gutters || [])])),
+    commentBox: Array.from(new Set([...(COMMON_SELECTORS.commentBox || []), ...(siteSpecific.commentBox || [])])),
+    commentHeader: Array.from(new Set([...(COMMON_SELECTORS.commentHeader || []), ...(siteSpecific.commentHeader || [])])),
   };
 }
 

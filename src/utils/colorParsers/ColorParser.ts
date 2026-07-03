@@ -20,11 +20,13 @@ export class ColorParser implements IColorParser {
       let colorString = "";
 
       switch (args.length) {
-        case 4: // Java/Kotlin/RGBA: new Color(r, g, b, a)
+        case 4: {
+          // Java/Kotlin/RGBA: new Color(r, g, b, a)
           const [r, g, b, a] = args;
           const alpha = normalizeAlpha(a);
           colorString = `rgba(${r}, ${g}, ${b}, ${alpha})`;
           break;
+        }
         case 3: // RGB: Color(r, g, b)
           colorString = `rgb(${args[0]}, ${args[1]}, ${args[2]})`;
           break;

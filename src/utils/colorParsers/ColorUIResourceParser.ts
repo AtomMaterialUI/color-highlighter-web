@@ -20,11 +20,13 @@ export class ColorUIResourceParser implements IColorParser {
       let colorString = "";
 
       switch (args.length) {
-        case 4: // RGBA
+        case 4: {
+          // RGBA
           const [r, g, b, a] = args;
           const alpha = normalizeAlpha(a);
           colorString = `rgba(${r}, ${g}, ${b}, ${alpha})`;
           break;
+        }
         case 3: // RGB
           colorString = `rgb(${args[0]}, ${args[1]}, ${args[2]})`;
           break;

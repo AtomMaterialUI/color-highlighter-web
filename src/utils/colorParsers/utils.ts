@@ -19,7 +19,7 @@ export function normalizeAlpha(a: string): string {
  */
 export function parseSingleArg(arg: string): string {
   // Strip "Color." prefix if present (e.g. ColorUIResource(Color.RED))
-  let cleanArg = arg.replace(/^Color\./i, "");
+  const cleanArg = arg.replace(/^Color\./i, "");
 
   // Handle 0x prefix (Hex literal)
   if (cleanArg.startsWith("0x")) {

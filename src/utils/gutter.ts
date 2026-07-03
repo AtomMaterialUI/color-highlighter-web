@@ -14,9 +14,7 @@ export function findGutterElement(container: HTMLElement): HTMLElement | null {
     if (selectors.commentBox?.length && selectors.commentHeader?.length) {
       const commentBox = container.closest(selectors.commentBox.join(", "));
       if (commentBox) {
-        const header = commentBox.querySelector(
-          selectors.commentHeader.join(", "),
-        );
+        const header = commentBox.querySelector(selectors.commentHeader.join(", "));
 
         if (header) {
           return header as HTMLElement;
@@ -58,10 +56,7 @@ export function findGutterElement(container: HTMLElement): HTMLElement | null {
 /**
  * Create a gutter icon element
  */
-export function createGutterIcon(
-  hexColor: string,
-  isTextarea: boolean = false,
-): HTMLElement {
+export function createGutterIcon(hexColor: string, isTextarea: boolean = false): HTMLElement {
   const icon = document.createElement("span");
   icon.className = GUTTER_ICON_CLASS;
   if (isTextarea) {
@@ -91,10 +86,7 @@ export function createGutterIcon(
 /**
  * Update the gutter icon for a container based on detected colors
  */
-export function updateGutterIcon(
-  container: HTMLElement,
-  matches: ColorMatch[],
-): void {
+export function updateGutterIcon(container: HTMLElement, matches: ColorMatch[]): void {
   const gutter = findGutterElement(container);
   if (!gutter) return;
 
@@ -117,20 +109,12 @@ export function updateGutterIcon(
     icon.style.backgroundColor = lastMatch.hexColor;
     icon.title = `Click to copy: ${lastMatch.hexColor}`;
   } else {
-    icon = createGutterIcon(
-      lastMatch.hexColor,
-      container.tagName === "TEXTAREA",
-    );
+    icon = createGutterIcon(lastMatch.hexColor, container.tagName === "TEXTAREA");
 
     // For textarea parents that are not headers, ensure they are relative
-    if (
-      container.tagName === "TEXTAREA" &&
-      getComputedStyle(gutter).position === "static"
-    ) {
+    if (container.tagName === "TEXTAREA" && getComputedStyle(gutter).position === "static") {
       // Check if it's NOT a header
-      const isHeader = selectors.commentHeader?.some(
-        (h) => gutter.matches(h) || gutter.closest(h) === gutter,
-      );
+      const isHeader = selectors.commentHeader?.some((h) => gutter.matches(h) || gutter.closest(h) === gutter);
 
       if (!isHeader) {
         gutter.style.position = "relative";
