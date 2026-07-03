@@ -1,24 +1,12 @@
-import type { PlasmoCSConfig } from "plasmo";
 import { detectColors } from "./utils/colorDetector";
 import {
   CODE_CONTAINER_SELECTOR,
   SKIP_SELECTOR,
+  SKIP_TAGS,
+  MAIN_AREA_SELECTOR,
   createColorizedElement,
-  isAlreadyColorized,
+  isAlreadyColorized
 } from "./utils/domUtils";
-
-export const config: PlasmoCSConfig = {
-  matches: [
-    "https://github.com/*",
-    "https://gitlab.com/*",
-    "https://gitee.com/*",
-    "https://bitbucket.org/*",
-    "https://dev.azure.com/*",
-    "https://*.github.dev/*",
-    "https://*.gitpod.io/*",
-  ],
-  all_frames: true,
-};
 
 /**
  * Process text nodes to colorize color codes
@@ -79,10 +67,16 @@ function processNode(
   }
 
   // Skip line numbers and other UI elements
-  if (node.nodeType === Node.ELEMENT_NODE && (node as HTMLElement).closest(SKIP_SELECTOR)) {
+  if (
+    node.nodeType === Node.ELEMENT_NODE &&
+    (node as HTMLElement).closest(SKIP_SELECTOR)
+  ) {
     return;
   }
-  if (node.nodeType === Node.TEXT_NODE && node.parentElement?.closest(SKIP_SELECTOR)) {
+  if (
+    node.nodeType === Node.TEXT_NODE &&
+    node.parentElement?.closest(SKIP_SELECTOR)
+  ) {
     return;
   }
 
@@ -101,18 +95,7 @@ function processNode(
   if (!currentIsInside) {
     if (node.nodeType === Node.ELEMENT_NODE) {
       const element = node as HTMLElement;
-      const skipTags = [
-        "SCRIPT",
-        "STYLE",
-        "NOSCRIPT",
-        "META",
-        "LINK",
-        "TITLE",
-        "HEAD",
-        "TEXTAREA",
-        "INPUT",
-      ];
-      if (!skipTags.includes(element.tagName.toUpperCase())) {
+      if (!SKIP_TAGS.includes(element.tagName.toUpperCase())) {
         const containers = element.querySelectorAll(CODE_CONTAINER_SELECTOR);
         containers.forEach((container) =>
           processNode(container, depth + 1, true),
@@ -137,18 +120,7 @@ function processNode(
     const element = node as HTMLElement;
 
     // Skip dangerous elements but process all others
-    const skipTags = [
-      "SCRIPT",
-      "STYLE",
-      "NOSCRIPT",
-      "META",
-      "LINK",
-      "TITLE",
-      "HEAD",
-      "TEXTAREA",
-      "INPUT",
-    ];
-    if (skipTags.includes(element.tagName.toUpperCase())) {
+    if (SKIP_TAGS.includes(element.tagName.toUpperCase())) {
       return;
     }
 
@@ -170,9 +142,7 @@ function colorizeEditor(): void {
   if (codeContainers.length === 0) {
     // Fallback: try to find main content area or just process body
     // We are already restricted by manifest matches to target domains
-    const mainArea = document.querySelector(
-      ".repository-content, #js-repo-pjax-container, #repository-container-react, .content-wrapper, main, [role='main']",
-    );
+    const mainArea = document.querySelector(MAIN_AREA_SELECTOR);
     processNode(mainArea || document.body, 0, false);
   } else {
     codeContainers.forEach((container) => {

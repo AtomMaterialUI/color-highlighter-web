@@ -2,6 +2,88 @@ import type { ColorMatch } from "./colorDetector";
 import { getContrastColor } from "./colorUtils";
 
 /**
+ * Tags to skip during colorization
+ */
+export const SKIP_TAGS = [
+  "SCRIPT",
+  "STYLE",
+  "NOSCRIPT",
+  "META",
+  "LINK",
+  "TITLE",
+  "HEAD",
+  "TEXTAREA",
+  "INPUT",
+];
+
+/**
+ * Common code editor container selectors
+ */
+export const CODE_CONTAINER_SELECTORS = [
+  ".blob-code",
+  ".blob-code-inner",
+  ".blob-wrapper",
+  ".file-content",
+  ".CodeMirror",
+  ".ace_editor",
+  ".monaco-editor",
+  "[id*='editor']",
+  ".hljs",
+  ".react-file-line-contents",
+  ".react-line-contents",
+  ".react-code-text",
+  "[data-testid='code-cell']",
+  ".highlight",
+  ".syntax-highlighted",
+];
+
+/**
+ * Element selectors to skip (like line numbers)
+ */
+export const SKIP_SELECTORS = [
+  ".blob-num",
+  ".js-line-number",
+  ".react-line-number",
+  ".line-numbers",
+  ".diff-line-num",
+  "[data-line-number]",
+  ".line-number",
+  ".ln",
+  ".td-line-number",
+  ".js-file-line-number",
+  ".diff-line-num-prev",
+  ".diff-line-num-next",
+  ".blob-num-expandable",
+];
+
+/**
+ * Selectors for main content areas
+ */
+export const MAIN_AREA_SELECTORS = [
+  ".repository-content",
+  "#js-repo-pjax-container",
+  "#repository-container-react",
+  ".content-wrapper",
+  "main",
+  "[role='main']",
+];
+
+/**
+ * Selector for common code editor containers
+ */
+export const CODE_CONTAINER_SELECTOR = CODE_CONTAINER_SELECTORS.join(", ");
+
+/**
+ * Selector for elements to skip (like line numbers)
+ */
+export const SKIP_SELECTOR = SKIP_SELECTORS.join(", ");
+
+/**
+ * Selector for main content areas
+ */
+export const MAIN_AREA_SELECTOR = MAIN_AREA_SELECTORS.join(", ");
+
+/**
  * Class name for color span wrapper
  */
 export const COLORIZE_CLASS = "github-colorize-span";
@@ -21,9 +103,9 @@ export function createColorizedElement(colorMatch: ColorMatch): HTMLElement {
   const textSpan = document.createElement("span");
   textSpan.textContent = colorMatch.text;
   textSpan.title = `Color: ${colorMatch.hexColor} (${colorMatch.format})`;
-  
+
   const contrastColor = getContrastColor(colorMatch.hexColor);
-  
+
   textSpan.style.cssText = `
     background-color: ${colorMatch.hexColor};
     color: ${contrastColor};
@@ -64,12 +146,10 @@ export function isAlreadyColorized(node: Node): boolean {
     node.nodeType === Node.ELEMENT_NODE
       ? (node as HTMLElement)
       : node.parentElement;
-
-  if (parentElement && parentElement.closest(`.${COLORIZE_CLASS}, .${COLOR_SWATCH_CLASS}`)) {
-    return true;
-  }
-
-  return false;
+  return !!(
+    parentElement &&
+    parentElement.closest(`.${COLORIZE_CLASS}, .${COLOR_SWATCH_CLASS}`)
+  );
 }
 
 /**
@@ -79,32 +159,21 @@ export function getNodeText(node: Node): string {
   if (node.nodeType === Node.TEXT_NODE) {
     return node.textContent || "";
   }
+
   if (node.nodeType === Node.ELEMENT_NODE) {
     const element = node as HTMLElement;
     // Skip script, style, and already colorized elements
     if (
-      element.tagName === "SCRIPT" ||
-      element.tagName === "STYLE" ||
+      SKIP_TAGS.includes(element.tagName.toUpperCase()) ||
       element.classList.contains(COLORIZE_CLASS) ||
       element.classList.contains(COLOR_SWATCH_CLASS)
     ) {
       return "";
     }
   }
+
   return "";
 }
-
-/**
- * Selector for common code editor containers
- */
-export const CODE_CONTAINER_SELECTOR =
-  ".blob-code, .blob-code-inner, .blob-wrapper, .file-content, .CodeMirror, .ace_editor, .monaco-editor, [id*='editor'], .hljs, .react-file-line-contents, .react-line-contents, .react-code-text, [data-testid='code-cell'], .highlight, .syntax-highlighted";
-
-/**
- * Selector for elements to skip (like line numbers)
- */
-export const SKIP_SELECTOR =
-  ".blob-num, .js-line-number, .react-line-number, .line-numbers, .diff-line-num, [data-line-number], .line-number, .ln, .td-line-number, .js-file-line-number, .diff-line-num-prev, .diff-line-num-next, .blob-num-expandable";
 
 /**
  * Check if we should process this element
@@ -113,20 +182,7 @@ export function shouldProcessElement(element: HTMLElement): boolean {
   const tagName = element.tagName.toUpperCase();
 
   // Skip these elements
-  const skipTags = [
-    "SCRIPT",
-    "STYLE",
-    "NOSCRIPT",
-    "META",
-    "LINK",
-    "TITLE",
-    "HEAD",
-    "TEXTAREA",
-    "INPUT",
-  ];
-  if (skipTags.includes(tagName)) {
-    return false;
-  }
+  if (SKIP_TAGS.includes(tagName)) return false;
 
   // Skip elements that are already colorized
   if (
@@ -137,9 +193,7 @@ export function shouldProcessElement(element: HTMLElement): boolean {
   }
 
   // Skip line numbers and other UI elements
-  if (element.closest(SKIP_SELECTOR) !== null) {
-    return false;
-  }
+  if (element.closest(SKIP_SELECTOR) !== null) return false;
 
   // Check if it's a code editor container or inside one
   return element.closest(CODE_CONTAINER_SELECTOR) !== null;
