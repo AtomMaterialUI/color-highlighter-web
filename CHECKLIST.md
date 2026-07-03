@@ -3,49 +3,49 @@
 ## Core Features
 
 - [x] Color detection engine
-    - [x] Hex code detection (#fff, #ffffff, #ffff, #ffffffff)
-    - [x] RGB/RGBA detection (rgb(), rgba())
-    - [x] HSL/HSLA detection (hsl(), hsla())
-    - [x] Named CSS color detection (red, blue, transparent, etc.)
+  - [x] Hex code detection (#fff, #ffffff, #ffff, #ffffffff)
+  - [x] RGB/RGBA detection (rgb(), rgba())
+  - [x] HSL/HSLA detection (hsl(), hsla())
+  - [x] Named CSS color detection (red, blue, transparent, etc.)
 
 - [x] Visual indicators
-    - [x] Colored square swatch display
-    - [x] Dotted underline styling
-    - [x] Hover effects
-    - [x] Click to copy functionality
+  - [x] Colored square swatch display
+  - [x] Dotted underline styling
+  - [x] Hover effects
+  - [x] Click to copy functionality
 
 - [x] Platform support
-    - [x] GitHub
-    - [x] GitHub Codespaces
-    - [x] GitPod
-    - [x] GitLab
-    - [x] Gitee
-    - [x] Bitbucket
-    - [x] Azure DevOps
+  - [x] GitHub
+  - [x] GitHub Codespaces
+  - [x] GitPod
+  - [x] GitLab
+  - [x] Gitee
+  - [x] Bitbucket
+  - [x] Azure DevOps
 
 ## Architecture & Code Quality
 
 - [x] Modular codebase
-    - [x] Separate color detection module
-    - [x] DOM utilities module
-    - [x] Color conversion utilities
-    - [x] Content script entry point
+  - [x] Separate color detection module
+  - [x] DOM utilities module
+  - [x] Color conversion utilities
+  - [x] Content script entry point
 
 - [x] TypeScript implementation
-    - [x] Strict type checking
-    - [x] Interfaces for type safety
-    - [x] No `any` types
+  - [x] Strict type checking
+  - [x] Interfaces for type safety
+  - [x] No `any` types
 
 - [x] Performance optimizations
-    - [x] MutationObserver for dynamic changes
-    - [x] Depth limiting for recursion
-    - [x] Skip lists for processed elements
-    - [x] Selective element processing
+  - [x] MutationObserver for dynamic changes
+  - [x] Depth limiting for recursion
+  - [x] Skip lists for processed elements
+  - [x] Selective element processing
 
 - [x] Browser compatibility
-    - [x] ES2022+ features
-    - [x] DOM APIs (ES5+)
-    - [x] No framework dependencies
+  - [x] ES2022+ features
+  - [x] DOM APIs (ES5+)
+  - [x] No framework dependencies
 
 ## Documentation
 

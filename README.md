@@ -6,25 +6,25 @@ editors.
 ## Features
 
 - **Color Detection**: Automatically detects and colorizes:
-    - Hex codes (#fff, #ffffff, #ffff, #ffffffff)
-    - RGB/RGBA colors (rgb(255, 255, 255), rgba(255, 255, 255, 0.5))
-    - HSL/HSLA colors (hsl(0, 100%, 50%), hsla(0, 100%, 50%, 0.5))
-    - Named CSS colors (red, blue, transparent, etc.)
+  - Hex codes (#fff, #ffffff, #ffff, #ffffffff)
+  - RGB/RGBA colors (rgb(255, 255, 255), rgba(255, 255, 255, 0.5))
+  - HSL/HSLA colors (hsl(0, 100%, 50%), hsla(0, 100%, 50%, 0.5))
+  - Named CSS colors (red, blue, transparent, etc.)
 
 - **Visual Indicators**: Each detected color displays:
-    - A colored square swatch next to the color code
-    - A dotted underline in the detected color for easy identification
+  - A colored square swatch next to the color code
+  - A dotted underline in the detected color for easy identification
 
 - **Interactive**: Click on color swatches to copy the hex code to your clipboard
 
 - **Supported Platforms**:
-    - GitHub (github.com)
-    - GitHub Codespaces
-    - GitPod
-    - GitLab (gitlab.com)
-    - Gitee (gitee.com)
-    - Bitbucket (bitbucket.org)
-    - Azure DevOps (dev.azure.com)
+  - GitHub (github.com)
+  - GitHub Codespaces
+  - GitPod
+  - GitLab (gitlab.com)
+  - Gitee (gitee.com)
+  - Bitbucket (bitbucket.org)
+  - Azure DevOps (dev.azure.com)
 
 ## Installation
 
@@ -40,11 +40,11 @@ editors.
    pnpm build
    ```
 4. Load in Chrome:
-    - Open `chrome://extensions`
-    - Enable "Developer mode" (toggle in top right)
-    - Click "Load unpacked"
-    - Select the `build` directory from this project
-    - The extension should now appear in your Extensions menu
+   - Open `chrome://extensions`
+   - Enable "Developer mode" (toggle in top right)
+   - Click "Load unpacked"
+   - Select the `build` directory from this project
+   - The extension should now appear in your Extensions menu
 
 ### Development with Hot Reload
 

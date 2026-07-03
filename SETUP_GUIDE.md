@@ -13,35 +13,35 @@ pnpm build
 ### Step 2: Load in Chrome
 
 1. **Open Chrome Extensions Page**
-    - Type `chrome://extensions` in the address bar, or
-    - Go to Menu → More tools → Extensions
+   - Type `chrome://extensions` in the address bar, or
+   - Go to Menu → More tools → Extensions
 
 2. **Enable Developer Mode**
-    - Toggle the "Developer mode" switch in the top-right corner
+   - Toggle the "Developer mode" switch in the top-right corner
 
 3. **Load Unpacked**
-    - Click the "Load unpacked" button
-    - Navigate to the `build` folder in this project
-    - Select it and click "Select Folder"
+   - Click the "Load unpacked" button
+   - Navigate to the `build` folder in this project
+   - Select it and click "Select Folder"
 
 4. **Verify Installation**
-    - You should see "Color Highlighter" listed in your extensions
-    - A colorful icon should appear in your extensions menu
+   - You should see "Color Highlighter" listed in your extensions
+   - A colorful icon should appear in your extensions menu
 
 ### Step 3: Test the Extension
 
 1. **Go to GitHub**
-    - Visit https://github.com
-    - Navigate to any file with color codes (CSS, JSON, etc.)
+   - Visit https://github.com
+   - Navigate to any file with color codes (CSS, JSON, etc.)
 
 2. **Look for Color Indicators**
-    - Hex codes like `#ff5733` should show a colored square
-    - RGB colors like `rgb(255, 87, 51)` should be colorized
-    - Named colors like `red` or `blue` should be highlighted
+   - Hex codes like `#ff5733` should show a colored square
+   - RGB colors like `rgb(255, 87, 51)` should be colorized
+   - Named colors like `red` or `blue` should be highlighted
 
 3. **Interact with Colors**
-    - Hover over a color swatch to see the hex value
-    - Click on a color swatch to copy the hex code to clipboard
+   - Hover over a color swatch to see the hex value
+   - Click on a color swatch to copy the hex code to clipboard
 
 ## Development Mode
 

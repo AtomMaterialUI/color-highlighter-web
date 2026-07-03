@@ -12,28 +12,28 @@ A fully functional **Chrome Extension** that automatically detects and visualize
 with:
 
 - ✨ **Automatic Color Detection** for:
-    - Hex codes (#fff, #ffffff, #ffff, #ffffffff)
-    - RGB/RGBA (rgb(255, 255, 255), rgba(255, 255, 255, 0.5))
-    - HSL/HSLA (hsl(0, 100%, 50%), hsla(0, 100%, 50%, 0.5))
-    - Named CSS colors (red, blue, transparent, etc.)
+  - Hex codes (#fff, #ffffff, #ffff, #ffffffff)
+  - RGB/RGBA (rgb(255, 255, 255), rgba(255, 255, 255, 0.5))
+  - HSL/HSLA (hsl(0, 100%, 50%), hsla(0, 100%, 50%, 0.5))
+  - Named CSS colors (red, blue, transparent, etc.)
 
 - 🎨 **Visual Indicators**:
-    - Colored square swatches next to detected colors
-    - Dotted underlines in the detected color
-    - Hover effects and styling
+  - Colored square swatches next to detected colors
+  - Dotted underlines in the detected color
+  - Hover effects and styling
 
 - 🖱️ **Interactive Features**:
-    - Click color swatches to copy hex codes
-    - Tooltip showing color values
-    - Dark mode support
+  - Click color swatches to copy hex codes
+  - Tooltip showing color values
+  - Dark mode support
 
 - 🌐 **Supported Platforms**:
-    - GitHub & GitHub Codespaces
-    - GitLab
-    - Gitee
-    - Bitbucket
-    - Azure DevOps
-    - GitPod
+  - GitHub & GitHub Codespaces
+  - GitLab
+  - Gitee
+  - Bitbucket
+  - Azure DevOps
+  - GitPod
 
 ---
 
@@ -110,17 +110,18 @@ github-colorize/
 ### Quick Start (3 steps):
 
 1. **Open Chrome Extensions**
+
    ```
    chrome://extensions
    ```
 
 2. **Enable Developer Mode**
-    - Toggle "Developer mode" in top-right corner
+   - Toggle "Developer mode" in top-right corner
 
 3. **Load Unpacked**
-    - Click "Load unpacked"
-    - Select the `build/` folder from this project
-    - Done! ✅
+   - Click "Load unpacked"
+   - Select the `build/` folder from this project
+   - Done! ✅
 
 ---
 
@@ -270,23 +271,23 @@ While the extension is production-ready, here are potential improvements:
 ## Next Steps
 
 1. **Load the Extension**
-    - Follow [SETUP_GUIDE.md](./SETUP_GUIDE.md)
-    - Load from `build/` directory in Chrome
+   - Follow [SETUP_GUIDE.md](./SETUP_GUIDE.md)
+   - Load from `build/` directory in Chrome
 
 2. **Test It Out**
-    - Visit GitHub, GitLab, or other supported sites
-    - Edit any file with color codes
-    - Verify colors are detected and displayed
+   - Visit GitHub, GitLab, or other supported sites
+   - Edit any file with color codes
+   - Verify colors are detected and displayed
 
 3. **Explore Features**
-    - Try different color formats
-    - Click swatches to copy colors
-    - Test on different platforms
+   - Try different color formats
+   - Click swatches to copy colors
+   - Test on different platforms
 
 4. **Customize (Optional)**
-    - Modify styling in `src/styles/global.css`
-    - Adjust detection patterns in `src/utils/colorDetector.ts`
-    - Rebuild with `pnpm build`
+   - Modify styling in `src/styles/global.css`
+   - Adjust detection patterns in `src/utils/colorDetector.ts`
+   - Rebuild with `pnpm build`
 
 ---
 
@@ -318,7 +319,7 @@ While the extension is production-ready, here are potential improvements:
 ## Quick Reference
 
 | Aspect                    | Details                               |
-|---------------------------|---------------------------------------|
+| ------------------------- | ------------------------------------- |
 | **Extension Type**        | Chrome Extension Manifest V3          |
 | **Primary Language**      | TypeScript (transpiled to JavaScript) |
 | **Color Library**         | chroma-js v2.6.0                      |

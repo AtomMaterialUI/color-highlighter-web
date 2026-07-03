@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "lib": [
-      "ES2022",
-      "DOM",
-      "DOM.Iterable"
-    ],
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "moduleResolution": "bundler",
     "ignoreDeprecations": "6.0",
@@ -27,12 +23,6 @@
     "outDir": "./build",
     "rootDir": "./src"
   },
-  "include": [
-    ".plasmo/index.d.ts",
-    "src/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+  "include": [".plasmo/index.d.ts", "src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }

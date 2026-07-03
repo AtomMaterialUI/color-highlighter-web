@@ -1,11 +1,13 @@
-/* GitHub Colorize Extension Styles */
+/* Color Highlighter Extension Styles */
 
 .github-colorize-span {
   display: contents;
 }
 
 .github-colorize-span > span:first-child {
-  transition: opacity 0.15s ease, transform 0.1s ease;
+  transition:
+    opacity 0.15s ease,
+    transform 0.1s ease;
 }
 
 .github-colorize-span > span:first-child:hover {
@@ -27,7 +29,9 @@
   cursor: pointer;
   vertical-align: middle;
   border: 1px solid rgba(128, 128, 128, 0.4);
-  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  transition:
+    transform 0.1s ease,
+    box-shadow 0.1s ease;
   user-select: none;
 }
 

@@ -1,6 +1,6 @@
 ## Project Overview
 
-This is a browser extension (Chrome MV3) that augments GitHub, GitLab and other code platforms for displaying colors alongside color codes. It is built using the Plasmo framework and TypeScript, with a focus on performance, maintainability, and user experience. 
+This is a browser extension (Chrome MV3) that augments GitHub, GitLab and other code platforms for displaying colors alongside color codes. It is built using the Plasmo framework and TypeScript, with a focus on performance, maintainability, and user experience.
 
 - **Framework**: [Plasmo](https://www.plasmo.com/) - Modern browser extension framework
 - **Language**: TypeScript
@@ -25,7 +25,7 @@ pnpm package
 
 ## Test Commands
 
-```bash
+````bash
 # Run all tests once
 pnpm test
 
@@ -64,7 +64,7 @@ import { useEffect, useState } from "react"
 
 import { createMarkdownBuilder } from "~/processing"
 import { detectPlatformAdapter } from "./adapters"
-```
+````
 
 ### Naming Conventions
 
@@ -85,13 +85,14 @@ import { detectPlatformAdapter } from "./adapters"
   - `console.error("❌ Error message")`
 
 Example:
+
 ```typescript
 try {
-  const result = await someAsyncOperation()
-  console.log("✅ 操作成功")
+  const result = await someAsyncOperation();
+  console.log("✅ 操作成功");
 } catch (error) {
-  console.error("❌ 操作失败:", error)
-  showToast(`导出失败: ${error.message}`, "error")
+  console.error("❌ 操作失败:", error);
+  showToast(`导出失败: ${error.message}`, "error");
 }
 ```
 
@@ -105,22 +106,23 @@ When adding a new Website, create a new adapter class in `src/contents/adapters/
 4. Register in `src/contents/adapters/index.ts`
 
 Template:
+
 ```typescript
-import { BaseAdapter } from "./base-adapter"
-import type { SelectorConfig } from "./base-adapter"
-import selectors from "../../config/selectors.json"
+import { BaseAdapter } from "./base-adapter";
+import type { SelectorConfig } from "./base-adapter";
+import selectors from "../../config/selectors.json";
 
 export class NewPlatformAdapter extends BaseAdapter {
-  platformName = "NewPlatform"
-  selectors: SelectorConfig = selectors.platforms.newplatform as SelectorConfig
+  platformName = "NewPlatform";
+  selectors: SelectorConfig = selectors.platforms.newplatform as SelectorConfig;
 
   detectPlatform(): boolean {
-    return window.location.host.includes("platform.com")
+    return window.location.host.includes("platform.com");
   }
 }
 
 export function createNewPlatformAdapter(): NewPlatformAdapter {
-  return new NewPlatformAdapter()
+  return new NewPlatformAdapter();
 }
 ```
 
@@ -144,11 +146,8 @@ Content scripts target specific URLs via `config` export:
 
 ```typescript
 export const config: PlasmoCSConfig = {
-  matches: [
-    "https://chat.deepseek.com/*",
-    "https://*.deepseek.com/*"
-  ]
-}
+  matches: ["https://chat.deepseek.com/*", "https://*.deepseek.com/*"],
+};
 ```
 
 ### UI Components
@@ -163,8 +162,8 @@ export const config: PlasmoCSConfig = {
 Use Zustand for complex state, Chrome Storage API for persistence:
 
 ```typescript
-const { obsidianConfig } = await chrome.storage.sync.get("obsidianConfig")
-await chrome.storage.sync.set({ obsidianConfig: config })
+const { obsidianConfig } = await chrome.storage.sync.get("obsidianConfig");
+await chrome.storage.sync.set({ obsidianConfig: config });
 ```
 
 ### Testing
@@ -172,6 +171,7 @@ await chrome.storage.sync.set({ obsidianConfig: config })
 **Framework**: Vitest (configured with jsdom environment)
 
 **Test File Location**: Place tests in `__tests__` folder next to source files:
+
 ```
 src/
 ├── contents/adapters/__tests__/adapters.test.ts
@@ -182,6 +182,7 @@ src/
 ```
 
 **Running Tests**:
+
 ```bash
 pnpm test              # Run all tests once
 pnpm test:watch        # Run tests in watch mode
@@ -189,19 +190,21 @@ pnpm test:coverage     # Run tests with coverage report
 ```
 
 **Writing Tests**:
+
 ```typescript
-import { describe, expect, it, vi } from "vitest"
-import { stripHtml } from "../cleaner"
+import { describe, expect, it, vi } from "vitest";
+import { stripHtml } from "../cleaner";
 
 describe("stripHtml", () => {
   it("should remove HTML tags", () => {
-    const html = "<p>Hello World</p>"
-    expect(stripHtml(html)).toBe("Hello World")
-  })
-})
+    const html = "<p>Hello World</p>";
+    expect(stripHtml(html)).toBe("Hello World");
+  });
+});
 ```
 
 **Chrome API Mocking**: Chrome extension APIs are automatically mocked in `src/test/setup.ts`:
+
 - `chrome.storage.sync.get/set`
 - `chrome.runtime.sendMessage`
 - `chrome.tabs.query`
@@ -277,8 +280,6 @@ git checkout main
 git merge hotfix/v{version}
 git push origin main --tags
 ```
-
-
 
 ## Debugging Tips
 
