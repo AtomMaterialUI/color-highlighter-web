@@ -1,6 +1,6 @@
 {
   "name": "github-colorize",
-  "displayName": "GitHub Colorize",
+  "displayName": "Color Highlighter",
   "version": "0.1.0",
   "description": "Colorize hex codes, RGB, HSL, and color names in online code editors",
   "author": "Your Name",
@@ -21,8 +21,8 @@
   "devDependencies": {
     "@types/chroma-js": "^3.1.2",
     "@types/chrome": "^0.2.2",
-    "@types/react": "^18.2.64",
-    "@types/react-dom": "^18.2.21",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
     "eslint": "^10.6.0",
     "plasmo": "latest",
     "prettier": "^3.9.4",
