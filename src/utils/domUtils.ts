@@ -101,13 +101,29 @@ export function getNodeText(node: Node): string {
 }
 
 /**
+ * Selector for common code editor containers
+ */
+export const CODE_CONTAINER_SELECTOR =
+  ".blob-code, .blob-wrapper, .file-content, .CodeMirror, .ace_editor, .monaco-editor, [id*='editor'], .hljs";
+
+/**
  * Check if we should process this element
  */
 export function shouldProcessElement(element: HTMLElement): boolean {
   const tagName = element.tagName.toUpperCase();
 
   // Skip these elements
-  const skipTags = ["SCRIPT", "STYLE", "NOSCRIPT", "META", "LINK", "TITLE"];
+  const skipTags = [
+    "SCRIPT",
+    "STYLE",
+    "NOSCRIPT",
+    "META",
+    "LINK",
+    "TITLE",
+    "HEAD",
+    "TEXTAREA",
+    "INPUT",
+  ];
   if (skipTags.includes(tagName)) {
     return false;
   }
@@ -120,28 +136,6 @@ export function shouldProcessElement(element: HTMLElement): boolean {
     return false;
   }
 
-  // Check common code editor containers
-  const classListStr = String(element.className || "");
-  const idStr = String(element.id || "");
-
-  // GitHub code editor patterns
-  if (
-    classListStr.includes("blob-code") ||
-    classListStr.includes("blob-wrapper") ||
-    classListStr.includes("file-content") ||
-    classListStr.includes("CodeMirror") ||
-    classListStr.includes("ace_editor") ||
-    classListStr.includes("monaco-editor") ||
-    classListStr.includes("editor") ||
-    idStr.includes("editor")
-  ) {
-    return true;
-  }
-
-  // GitLab patterns
-  if (classListStr.includes("hljs") || classListStr.includes("file-content")) {
-    return true;
-  }
-
-  return false;
+  // Check if it's a code editor container or inside one
+  return element.closest(CODE_CONTAINER_SELECTOR) !== null;
 }
