@@ -1,0 +1,9 @@
+# Icon files
+*.png
+*.jpg
+*.jpeg
+
+# Build output
+build/
+.plasmo/
+node_modules/

@@ -1,0 +1,33 @@
+{
+  "name": "github-colorize",
+  "displayName": "GitHub Colorize",
+  "version": "0.1.0",
+  "description": "Colorize hex codes, RGB, HSL, and color names in online code editors",
+  "author": "Your Name",
+  "scripts": {
+    "dev": "plasmo dev",
+    "build": "bash build.sh",
+    "package": "bash build.sh && zip -r github-colorize.zip build/",
+    "lint": "eslint --ext .js,.jsx,.ts,.tsx ."
+  },
+  "dependencies": {
+    "chroma-js": "^3.2.0",
+    "polished": "^4.3.1"
+  },
+  "devDependencies": {
+    "@types/chroma-js": "^3.1.2",
+    "eslint": "^10.6.0",
+    "plasmo": "latest",
+    "prettier": "^3.9.4",
+    "typescript": "^6.0.3"
+  },
+  "manifest": {
+    "host_permissions": [
+      "https://github.com/*",
+      "https://gitlab.com/*",
+      "https://gitee.com/*",
+      "https://bitbucket.org/*",
+      "https://dev.azure.com/*"
+    ]
+  }
+}

@@ -1,0 +1,55 @@
+/* GitHub Colorize Extension Styles */
+
+.github-colorize-span {
+  position: relative;
+  display: inline;
+}
+
+.github-colorize-span > span:first-child {
+  position: relative;
+  cursor: help;
+  transition: background-color 0.2s ease;
+}
+
+.github-colorize-span > span:first-child:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 2px;
+}
+
+.github-colorize-swatch {
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  margin: 0 0.2em;
+  border-radius: 2px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  vertical-align: middle;
+  cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.1);
+}
+
+.github-colorize-swatch:hover {
+  transform: scale(1.2);
+  box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.github-colorize-swatch:active {
+  transform: scale(0.95);
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .github-colorize-span > span:first-child:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+
+  .github-colorize-swatch {
+    border-color: rgba(255, 255, 255, 0.2);
+    box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.1);
+  }
+
+  .github-colorize-swatch:hover {
+    box-shadow: inset 0 0 0 0.5px rgba(255, 255, 255, 0.1), 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+}
