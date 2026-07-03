@@ -65,9 +65,14 @@ export const SKIP_SELECTORS = currentSelectors.skip;
 export const MAIN_AREA_SELECTORS = currentSelectors.mainAreas;
 
 /**
- * Create a wrapper span for a color match with background color
+ * Create a wrapper span for a color match with background color.
+ * Supports partial matches for multi-node highlighting.
  */
-export function createColorizedElement(colorMatch: ColorMatch): HTMLElement {
+export function createColorizedElement(
+  colorMatch: ColorMatch,
+  isFirstPart: boolean = true,
+  isLastPart: boolean = true,
+): HTMLElement {
   const wrapper = document.createElement("span");
   wrapper.className = COLORIZE_CLASS;
   wrapper.style.cssText = `
@@ -84,9 +89,11 @@ export function createColorizedElement(colorMatch: ColorMatch): HTMLElement {
   textSpan.style.cssText = `
     background-color: ${colorMatch.hexColor};
     color: ${contrastColor};
-    border-radius: 3px;
-    padding: 0 3px;
-    margin: 0 1px;
+    border-radius: ${isFirstPart ? "3px" : "0"} ${isLastPart ? "3px" : "0"} ${
+    isLastPart ? "3px" : "0"
+  } ${isFirstPart ? "3px" : "0"};
+    padding: 0 ${isLastPart ? "3px" : "0"} 0 ${isFirstPart ? "3px" : "0"};
+    margin: 0 ${isLastPart ? "1px" : "0"} 0 ${isFirstPart ? "1px" : "0"};
     font-weight: 500;
     cursor: pointer;
   `;

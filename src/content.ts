@@ -1,4 +1,4 @@
-import { detectColors } from "./utils/colorDetector";
+import { detectColors, ColorMatch } from "./utils/colorDetector";
 import {
   CODE_CONTAINER_SELECTOR,
   SKIP_SELECTOR,
@@ -53,84 +53,157 @@ function processTextNode(textNode: Text): void {
 /**
  * Process a node and its children to colorize color codes
  */
-function processNode(
-  node: Node,
-  depth: number = 0,
-  isInsideContainer: boolean = false,
-): void {
-  if (depth > 50) {
-    return; // Prevent infinite recursion
-  }
+function processNode(node: Node, depth: number = 0): void {
+  if (depth > 50) return;
 
-  // Skip if already colorized or is a special element
-  if (isAlreadyColorized(node)) {
-    return;
-  }
+  // Skip if already colorized
+  if (isAlreadyColorized(node)) return;
 
-  // Skip line numbers and other UI elements
-  if (
-    node.nodeType === Node.ELEMENT_NODE &&
-    (node as HTMLElement).closest(SKIP_SELECTOR)
-  ) {
-    return;
-  }
-  if (
-    node.nodeType === Node.TEXT_NODE &&
-    node.parentElement?.closest(SKIP_SELECTOR)
-  ) {
-    return;
-  }
-
-  let currentIsInside = isInsideContainer;
-  if (!currentIsInside) {
-    if (node.nodeType === Node.ELEMENT_NODE) {
-      currentIsInside =
-        (node as HTMLElement).closest(CODE_CONTAINER_SELECTOR) !== null;
-    } else if (node.nodeType === Node.TEXT_NODE) {
-      currentIsInside =
-        node.parentElement?.closest(CODE_CONTAINER_SELECTOR) !== null;
-    }
-  }
-
-  // If not inside a container, only look for containers within this element
-  if (!currentIsInside) {
-    if (node.nodeType === Node.ELEMENT_NODE) {
+  switch (node.nodeType) {
+    case Node.ELEMENT_NODE:
       const element = node as HTMLElement;
-      if (!SKIP_TAGS.includes(element.tagName.toUpperCase())) {
-        const containers = element.querySelectorAll(CODE_CONTAINER_SELECTOR);
-        containers.forEach((container) =>
-          processNode(container, depth + 1, true),
-        );
+
+      // Skip line numbers and UI elements
+      if (element.closest(SKIP_SELECTOR)) return;
+
+      if (SKIP_TAGS.includes(element.tagName.toUpperCase())) return;
+
+      // If it's a code container, process it as a unit to handle multi-node matches
+      if (element.closest(CODE_CONTAINER_SELECTOR)) {
+        processContainer(element);
+        return;
       }
-    }
-    return;
-  }
 
-  // Process text nodes
-  if (node.nodeType === Node.TEXT_NODE) {
+      // Otherwise recurse to find containers or handle non-code areas
+      const children = Array.from(element.childNodes);
+      for (const child of children) {
+        processNode(child, depth + 1);
+      }
+      break;
+    case Node.TEXT_NODE:
+      // We only reach here if we're not inside a code container yet
+      // because CODE_CONTAINER_SELECTOR check in ELEMENT_NODE would have triggered processContainer
+      // But some text nodes might be in MAIN_AREA but not in a specific code container
+      const parent = node.parentElement;
+      if (parent && parent.closest(MAIN_AREA_SELECTOR)) {
+        processTextNode(node as Text);
+      }
+      break;
+  }
+}
+
+/**
+ * Process a container element as a unit to support color matches spanning multiple text nodes.
+ */
+function processContainer(container: HTMLElement): void {
+  // 1. Collect all text nodes and their absolute offsets within the container
+  const textNodes: { node: Text; start: number; end: number }[] = [];
+  let combinedText = "";
+  let currentOffset = 0;
+
+  const walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, {
+    acceptNode: (node) => {
+      // Skip already colorized or skipped elements
+      if (isAlreadyColorized(node)) return NodeFilter.FILTER_REJECT;
+      if (node.parentElement?.closest(SKIP_SELECTOR))
+        return NodeFilter.FILTER_REJECT;
+      return NodeFilter.FILTER_ACCEPT;
+    },
+  });
+
+  let node: Node | null;
+  while ((node = walker.nextNode())) {
     const text = node.textContent || "";
-    // Only process if text looks like it might contain colors
-    if (text.length > 0 && /#?|rgb|hsl|[a-z0-9]{3,6}/i.test(text)) {
-      processTextNode(node as Text);
-    }
-    return;
+    textNodes.push({
+      node: node as Text,
+      start: currentOffset,
+      end: currentOffset + text.length,
+    });
+    combinedText += text;
+    currentOffset += text.length;
   }
 
-  // Process element nodes
-  if (node.nodeType === Node.ELEMENT_NODE) {
-    const element = node as HTMLElement;
+  if (combinedText.length === 0) return;
 
-    // Skip dangerous elements but process all others
-    if (SKIP_TAGS.includes(element.tagName.toUpperCase())) {
-      return;
-    }
+  // 2. Detect colors in the combined text
+  const matches = detectColors(combinedText);
+  if (matches.length === 0) return;
 
-    // Process children
-    const children = Array.from(node.childNodes);
-    for (const child of children) {
-      processNode(child, depth + 1, true);
+  // 3. For each text node, find overlapping matches and apply them
+  // We process text nodes in reverse order to not mess up indices if we were to modify them,
+  // but since we replace them completely, order doesn't strictly matter for nodes,
+  // but it does for matches within a node.
+  for (let i = textNodes.length - 1; i >= 0; i--) {
+    const { node, start, end } = textNodes[i];
+    const nodeMatches = matches.filter(
+      (m) => m.startIndex < end && m.endIndex > start,
+    );
+
+    if (nodeMatches.length > 0) {
+      processTextNodeWithMatches(node, start, nodeMatches);
     }
   }
+}
+
+/**
+ * Process a single text node with a list of color matches that overlap it.
+ */
+function processTextNodeWithMatches(
+  textNode: Text,
+  nodeStartOffset: number,
+  matches: ColorMatch[],
+): void {
+  const text = textNode.textContent || "";
+  const nodeEndOffset = nodeStartOffset + text.length;
+  const fragment = document.createDocumentFragment();
+  let lastInNodeIndex = 0;
+
+  // Sort matches by start index to process them in order
+  const sortedMatches = [...matches].sort(
+    (a, b) => a.startIndex - b.startIndex,
+  );
+
+  for (const match of sortedMatches) {
+    const matchStartInNode = Math.max(0, match.startIndex - nodeStartOffset);
+    const matchEndInNode = Math.min(
+      text.length,
+      match.endIndex - nodeStartOffset,
+    );
+
+    // Add text before the match part
+    if (matchStartInNode > lastInNodeIndex) {
+      fragment.appendChild(
+        document.createTextNode(
+          text.substring(lastInNodeIndex, matchStartInNode),
+        ),
+      );
+    }
+
+    // Add colorized match part
+    const matchPartText = text.substring(matchStartInNode, matchEndInNode);
+    if (matchPartText.length > 0) {
+      const isFirstPart = match.startIndex >= nodeStartOffset;
+      const isLastPart = match.endIndex <= nodeEndOffset;
+
+      const colorizedElement = createColorizedElement(
+        { ...match, text: matchPartText },
+        isFirstPart,
+        isLastPart,
+      );
+      fragment.appendChild(colorizedElement);
+    }
+
+    lastInNodeIndex = matchEndInNode;
+  }
+
+  // Add remaining text
+  if (lastInNodeIndex < text.length) {
+    fragment.appendChild(
+      document.createTextNode(text.substring(lastInNodeIndex)),
+    );
+  }
+
+  textNode.parentNode?.replaceChild(fragment, textNode);
 }
 
 /**
@@ -144,10 +217,10 @@ function colorizeEditor(): void {
     // Fallback: try to find main content area or just process body
     // We are already restricted by manifest matches to target domains
     const mainArea = document.querySelector(MAIN_AREA_SELECTOR);
-    processNode(mainArea || document.body, 0, false);
+    processNode(mainArea || document.body, 0);
   } else {
     codeContainers.forEach((container) => {
-      processNode(container, 0, true);
+      processNode(container, 0);
     });
   }
 }
