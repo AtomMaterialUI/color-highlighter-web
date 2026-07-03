@@ -1,4 +1,5 @@
 import type { ColorMatch } from "./colorDetector";
+import { getContrastColor } from "./colorUtils";
 
 /**
  * Class name for color span wrapper
@@ -7,36 +8,7 @@ export const COLORIZE_CLASS = "github-colorize-span";
 export const COLOR_SWATCH_CLASS = "github-colorize-swatch";
 
 /**
- * Create a color swatch element
- */
-export function createColorSwatch(hex: string): HTMLElement {
-  const swatch = document.createElement("span");
-  swatch.className = COLOR_SWATCH_CLASS;
-  swatch.title = hex;
-  swatch.style.cssText = `
-    display: inline-block;
-    width: 1em;
-    height: 1em;
-    margin: 0 0.2em;
-    border-radius: 2px;
-    background-color: ${hex};
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    vertical-align: middle;
-    cursor: pointer;
-    box-shadow: inset 0 0 0 0.5px rgba(0, 0, 0, 0.1);
-  `;
-
-  // Copy hex to clipboard on click
-  swatch.addEventListener("click", (e) => {
-    e.stopPropagation();
-    navigator.clipboard.writeText(hex).catch(console.error);
-  });
-
-  return swatch;
-}
-
-/**
- * Create a wrapper span for a color match with swatch
+ * Create a wrapper span for a color match with background color
  */
 export function createColorizedElement(colorMatch: ColorMatch): HTMLElement {
   const wrapper = document.createElement("span");
@@ -45,18 +17,30 @@ export function createColorizedElement(colorMatch: ColorMatch): HTMLElement {
     display: contents;
   `;
 
-  // Create the color text (unchanged)
+  // Create the color text span
   const textSpan = document.createElement("span");
   textSpan.textContent = colorMatch.text;
   textSpan.title = `Color: ${colorMatch.hexColor} (${colorMatch.format})`;
-  textSpan.style.borderBottom = `2px dotted ${colorMatch.hexColor}`;
-  textSpan.style.cursor = "help";
+  
+  const contrastColor = getContrastColor(colorMatch.hexColor);
+  
+  textSpan.style.cssText = `
+    background-color: ${colorMatch.hexColor};
+    color: ${contrastColor};
+    border-radius: 3px;
+    padding: 0 3px;
+    margin: 0 1px;
+    font-weight: 500;
+    cursor: pointer;
+  `;
 
-  // Create swatch
-  const swatch = createColorSwatch(colorMatch.hexColor);
+  // Copy hex to clipboard on click
+  textSpan.addEventListener("click", (e) => {
+    e.stopPropagation();
+    navigator.clipboard.writeText(colorMatch.hexColor).catch(console.error);
+  });
 
   wrapper.appendChild(textSpan);
-  wrapper.appendChild(swatch);
 
   return wrapper;
 }
