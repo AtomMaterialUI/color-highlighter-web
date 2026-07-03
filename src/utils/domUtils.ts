@@ -19,7 +19,6 @@ export const SKIP_TAGS = [
   "LINK",
   "TITLE",
   "HEAD",
-  "TEXTAREA",
   "INPUT",
 ];
 

@@ -15,8 +15,10 @@ export interface SiteSelectors {
 const COMMON_SELECTORS: SiteSelectors = {
   codeContainers: [
     ".CodeMirror",
+    ".CodeMirror-line",
     ".ace_editor",
     ".monaco-editor",
+    ".view-line",
     "[id*='editor']",
     ".hljs",
     ".highlight",
