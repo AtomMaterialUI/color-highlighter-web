@@ -90,14 +90,22 @@ export function createColorizedElement(
         font-weight: bold;
       `;
       break;
-    case "border":
+    case "border": {
+      const shadows = [
+        `inset 0 1px 0 0 ${colorMatch.hexColor}`, // top
+        `inset 0 -1px 0 0 ${colorMatch.hexColor}`, // bottom
+      ];
+      if (isFirstPart) shadows.push(`inset 1px 0 0 0 ${colorMatch.hexColor}`); // left
+      if (isLastPart) shadows.push(`inset -1px 0 0 0 ${colorMatch.hexColor}`); // right
+
       styleCss = `
-        border: 1px solid ${colorMatch.hexColor};
+        box-shadow: ${shadows.join(", ")};
         border-radius: ${borderRadius};
         padding: ${padding};
         margin: ${margin};
       `;
       break;
+    }
     case "underline":
       styleCss = `
         border-bottom: 2px groove ${colorMatch.hexColor};
