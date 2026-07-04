@@ -1,3 +1,4 @@
+import browser from "webextension-polyfill";
 import { Settings, DEFAULT_SETTINGS } from "../types";
 
 /**
@@ -6,8 +7,8 @@ import { Settings, DEFAULT_SETTINGS } from "../types";
  * Content-script modules can import `getSettings()` instead of receiving
  * `settings` as a parameter, eliminating prop-drilling throughout the pipeline.
  *
- * The store is initialized once from `chrome.storage.sync` via `initSettings()`,
- * and it automatically stays in sync via `chrome.storage.onChanged`.
+ * The store is initialized once from `browser.storage.sync` via `initSettings()`,
+ * and it automatically stays in sync via `browser.storage.onChanged`.
  *
  * All settings are namespaced under a single storage key (STORAGE_KEY) holding
  * a `Settings` object, so we don't pollute the extension's storage root and
@@ -40,7 +41,7 @@ export function subscribeSettings(listener: Listener): () => void {
 
 /** Persist the whole settings object under the single namespaced key. */
 export function saveSettings(next: Settings): void {
-  chrome.storage.sync.set({ [STORAGE_KEY]: next });
+  browser.storage.sync.set({ [STORAGE_KEY]: next });
 }
 
 function mergeSettings(partial: Partial<Settings> | undefined | null): Settings {
@@ -68,19 +69,16 @@ function diff(next: Settings, prev: Settings): Partial<Settings> {
  * on first run if the namespaced key is not yet present.
  */
 async function readFromStorage(): Promise<Settings> {
-  return new Promise<Settings>((resolve) => {
-    chrome.storage.sync.get([STORAGE_KEY], (result) => {
-      const nested = result?.[STORAGE_KEY] as Partial<Settings> | undefined;
-      if (nested && typeof nested === "object") {
-        resolve(mergeSettings(nested));
-        return;
-      }
-    });
-  });
+  const result = await browser.storage.sync.get([STORAGE_KEY]);
+  const nested = result?.[STORAGE_KEY] as Partial<Settings> | undefined;
+  if (nested && typeof nested === "object") {
+    return mergeSettings(nested);
+  }
+  return mergeSettings(null);
 }
 
 /**
- * Initialize the store from chrome.storage.sync and start listening for changes.
+ * Initialize the store from browser.storage.sync and start listening for changes.
  * Safe to call multiple times.
  */
 export async function initSettings(): Promise<Settings> {
@@ -89,7 +87,7 @@ export async function initSettings(): Promise<Settings> {
   initialized = true;
   current = await readFromStorage();
 
-  chrome.storage.onChanged.addListener((changes, area) => {
+  browser.storage.onChanged.addListener((changes, area) => {
     if (area !== "sync") return;
 
     const change = changes[STORAGE_KEY];

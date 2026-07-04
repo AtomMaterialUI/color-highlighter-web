@@ -11,7 +11,7 @@
     "forceConsistentCasingInFileNames": true,
     "jsx": "react-jsx",
     "resolveJsonModule": true,
-    "types": ["chrome"],
+    "types": ["chrome", "webextension-polyfill"],
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
