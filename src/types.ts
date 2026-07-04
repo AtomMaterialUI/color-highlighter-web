@@ -14,5 +14,5 @@ export const DEFAULT_SETTINGS: Settings = {
   enabled: true,
   colorizationType: "background",
   showSwatch: true,
-  forceDetect: true,
+  forceDetect: false,
 };
