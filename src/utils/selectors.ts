@@ -102,6 +102,14 @@ const SITE_REGISTRY: Record<string, Partial<SiteSelectors>> = {
     codeContainers: [".code-area", ".highlight"],
     mainAreas: [".repository-content"],
   },
+  "dev.azure.com": {
+    codeContainers: [".monaco-editor"],
+    mainAreas: [".main-container", "#region-main"],
+  },
+  "gitpod.io": {
+    codeContainers: [".monaco-editor"],
+    mainAreas: ["#main-content"],
+  },
 };
 
 /**
@@ -135,6 +143,10 @@ export const isGitHub = () => window.location.hostname.endsWith("github.com") ||
 export const isGitLab = () => window.location.hostname.endsWith("gitlab.com");
 
 export const isBitbucket = () => window.location.hostname.endsWith("bitbucket.org");
+
+export const isAzureDevOps = () => window.location.hostname.endsWith("dev.azure.com");
+
+export const isGitPod = () => window.location.hostname.endsWith("gitpod.io");
 
 /**
  * Check if the current site is a supported code hosting platform
