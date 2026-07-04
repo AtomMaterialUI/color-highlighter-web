@@ -1,10 +1,12 @@
 export type ColorizationType = "background" | "foreground" | "border" | "underline";
 
+export type Appearance = "light" | "dark";
+
 export interface Settings {
   enabled: boolean;
   colorizationType: ColorizationType;
-  /** Show an inline color swatch next to each detected color token. */
   showSwatch: boolean;
+  appearance?: Appearance;
 }
 
 export const DEFAULT_SETTINGS: Settings = {
