@@ -11,6 +11,7 @@ import {
 } from "./domUtils";
 import { GUTTER_ICON_CLASS, updateGutterIcon } from "./gutter";
 import { getSettings } from "./settingsStore";
+import { isSupportedSite } from "./selectors";
 
 /**
  * Remove colorization from a container
@@ -92,7 +93,12 @@ function processTextNode(textNode: Text): void {
  * Process a node and its children to colorize color codes
  */
 export function processNode(node: Node, depth: number = 0): void {
-  if (!getSettings().enabled) return;
+  const settings = getSettings();
+  if (!settings.enabled) return;
+
+  // If not on a supported site and forceDetect is off, skip processing
+  if (!isSupportedSite() && !settings.forceDetect) return;
+
   if (depth > 50) return;
 
   // Skip if already colorized
@@ -104,6 +110,7 @@ export function processNode(node: Node, depth: number = 0): void {
 
       // Skip line numbers and UI elements
       if (element.closest(SKIP_SELECTOR)) return;
+
       if (SKIP_TAGS.includes(element.tagName.toUpperCase())) return;
 
       // Special handling for textareas (gutter icon only)
@@ -125,8 +132,9 @@ export function processNode(node: Node, depth: number = 0): void {
       }
 
       // If it's a code container, process it as a unit to handle multi-node matches
-      if (element.closest(CODE_CONTAINER_SELECTOR)) {
-        processContainer(element);
+      const container = element.closest(CODE_CONTAINER_SELECTOR);
+      if (container) {
+        processContainer(container as HTMLElement);
         return;
       }
 
@@ -261,7 +269,14 @@ function processTextNodeWithMatches(textNode: Text, nodeStartOffset: number, mat
  * Main colorize function
  */
 export function colorizeEditor(): void {
-  if (!getSettings().enabled) {
+  const settings = getSettings();
+  if (!settings.enabled) {
+    removeColorization(document.body);
+    return;
+  }
+
+  // If not on a supported site and forceDetect is off, do nothing
+  if (!isSupportedSite() && !settings.forceDetect) {
     removeColorization(document.body);
     return;
   }

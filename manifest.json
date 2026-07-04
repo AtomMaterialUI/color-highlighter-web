@@ -12,7 +12,9 @@
     "https://bitbucket.org/*",
     "https://dev.azure.com/*",
     "https://*.github.dev/*",
-    "https://*.gitpod.io/*"
+    "https://*.gitpod.io/*",
+    "http://*/*",
+    "https://*/*"
   ],
   "content_scripts": [
     {
@@ -23,7 +25,9 @@
         "https://bitbucket.org/*",
         "https://dev.azure.com/*",
         "https://*.github.dev/*",
-        "https://*.gitpod.io/*"
+        "https://*.gitpod.io/*",
+        "http://*/*",
+        "https://*/*"
       ],
       "js": ["content.js"],
       "css": ["styles/global.css"]

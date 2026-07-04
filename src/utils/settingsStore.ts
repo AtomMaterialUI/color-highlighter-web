@@ -48,6 +48,7 @@ function mergeSettings(partial: Partial<Settings> | undefined | null): Settings 
     enabled: partial?.enabled ?? DEFAULT_SETTINGS.enabled,
     colorizationType: partial?.colorizationType ?? DEFAULT_SETTINGS.colorizationType,
     showSwatch: partial?.showSwatch ?? DEFAULT_SETTINGS.showSwatch,
+    forceDetect: partial?.forceDetect ?? DEFAULT_SETTINGS.forceDetect,
     appearance: partial?.appearance ?? DEFAULT_SETTINGS.appearance,
   };
 }
@@ -57,6 +58,7 @@ function diff(next: Settings, prev: Settings): Partial<Settings> {
   if (next.enabled !== prev.enabled) applied.enabled = next.enabled;
   if (next.colorizationType !== prev.colorizationType) applied.colorizationType = next.colorizationType;
   if (next.showSwatch !== prev.showSwatch) applied.showSwatch = next.showSwatch;
+  if (next.forceDetect !== prev.forceDetect) applied.forceDetect = next.forceDetect;
   if (next.appearance !== prev.appearance) applied.appearance = next.appearance;
   return applied;
 }

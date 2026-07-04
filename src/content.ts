@@ -1,7 +1,7 @@
 import { NAV_SELECTOR, initSettings, subscribeSettings, getSettings, colorizeEditor, removeColorization, processNode } from "./utils";
 
 export const config = {
-  matches: ["https://github.com/*", "https://gitlab.com/*", "https://bitbucket.org/*", "https://gitee.com/*"],
+  matches: ["http://*/*", "https://*/*"],
 };
 
 /**

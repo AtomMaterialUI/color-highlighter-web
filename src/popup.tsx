@@ -97,8 +97,23 @@ export default function IndexPopup() {
                   <Text size="2" weight="bold">
                     Inline swatch
                   </Text>
+                  <Text size="1" color="gray">
+                    Show a small color swatch next to each colorized value
+                  </Text>
                 </Flex>
                 <Switch checked={settings.showSwatch} onCheckedChange={(checked) => update({ showSwatch: checked })} />
+              </Flex>
+
+              <Flex justify="between" align="center">
+                <Flex direction="column">
+                  <Text size="2" weight="bold">
+                    Force Detect
+                  </Text>
+                  <Text size="1" color="gray">
+                    Enable on all websites' code and pre blocks
+                  </Text>
+                </Flex>
+                <Switch checked={settings.forceDetect} onCheckedChange={(checked) => update({ forceDetect: checked })} />
               </Flex>
             </Flex>
           </Card>

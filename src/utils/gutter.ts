@@ -1,5 +1,6 @@
 import { ColorMatch } from "./colorDetector";
 import { getSelectorsForCurrentSite } from "./selectors";
+import { getSettings } from "./settingsStore";
 
 export const GUTTER_ICON_CLASS = "github-colorize-gutter-icon";
 

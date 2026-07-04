@@ -27,6 +27,8 @@ const COMMON_SELECTORS: SiteSelectors = {
     ".hljs",
     ".highlight",
     ".syntax-highlighted",
+    "pre",
+    "code",
   ],
   skip: [".line-numbers", ".line-number", ".ln", "[data-line-number]"],
   mainAreas: ["main", "[role='main']"],
@@ -133,3 +135,11 @@ export const isGitHub = () => window.location.hostname.endsWith("github.com") ||
 export const isGitLab = () => window.location.hostname.endsWith("gitlab.com");
 
 export const isBitbucket = () => window.location.hostname.endsWith("bitbucket.org");
+
+/**
+ * Check if the current site is a supported code hosting platform
+ */
+export const isSupportedSite = () => {
+  const hostname = window.location.hostname;
+  return Object.keys(SITE_REGISTRY).some((key) => hostname.endsWith(key));
+};
