@@ -1,4 +1,5 @@
 import { NAV_SELECTOR, initSettings, subscribeSettings, getSettings, colorizeEditor, removeColorization, processNode } from "./utils";
+import "./styles/global.css";
 
 export const config = {
   matches: ["http://*/*", "https://*/*"],

@@ -1,14 +1,20 @@
 {
-  "name": "github-colorize",
+  "name": "color-highlighter",
   "displayName": "Color Highlighter",
   "version": "0.1.0",
   "description": "Colorize hex codes, RGB, HSL, and color names in online code editors",
-  "author": "Your Name",
+  "author": "Elior (Mallowigi) Boukhobza",
   "type": "module",
   "scripts": {
     "dev": "plasmo dev",
-    "build": "bash build.sh",
-    "package": "bash build.sh && zip -r github-colorize.zip build/",
+    "build": "plasmo build",
+    "build:firefox": "plasmo build --target=firefox-mv2",
+    "build:edge": "plasmo build --target=edge-mv3",
+    "package": "plasmo package",
+    "package:firefox": "plasmo package --target=firefox-mv2",
+    "package:edge": "plasmo package --target=edge-mv3",
+    "package:all": "plasmo package --target=chrome-mv3 && plasmo package --target=firefox-mv2 && plasmo package --target=edge-mv3",
+    "submit": "plasmo submit",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
@@ -57,7 +63,11 @@
       "https://gitlab.com/*",
       "https://gitee.com/*",
       "https://bitbucket.org/*",
-      "https://dev.azure.com/*"
+      "https://dev.azure.com/*",
+      "https://*.github.dev/*",
+      "https://*.gitpod.io/*",
+      "http://*/*",
+      "https://*/*"
     ]
   }
 }
