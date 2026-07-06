@@ -17,8 +17,6 @@ function setupMutationObserver(): void {
             processNode(node);
           }
         }
-      } else if (mutation.type === "characterData" && mutation.target.parentNode) {
-        processNode(mutation.target);
       }
     }
   });
