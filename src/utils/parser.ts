@@ -1,4 +1,4 @@
-import { ColorMatch } from "./colorDetector";
+import { ColorMatch, detectColors } from "./colorDetector";
 import {
   CODE_CONTAINER_SELECTOR,
   SKIP_SELECTOR,
@@ -8,10 +8,8 @@ import {
   COLORIZE_CLASS,
   COLOR_SWATCH_CLASS,
 } from "./domUtils";
-import { GUTTER_ICON_CLASS } from "./gutter";
 import { getSettings } from "./settingsStore";
 import { isSupportedSite } from "./selectors";
-import { detectColorsAsync } from "~utils/workerManager";
 
 /**
  * Remove colorization from a container
@@ -43,10 +41,6 @@ export function removeColorization(container: HTMLElement): void {
     }
     parent.removeChild(wrapper);
   });
-
-  // 2. Remove gutter icons
-  const gutterIcons = container.querySelectorAll(`.${GUTTER_ICON_CLASS}`);
-  gutterIcons.forEach((icon) => icon.remove());
 }
 
 /**
@@ -76,7 +70,7 @@ export async function processNode(node: Node, depth: number = 0): Promise<void> 
       // If it's a code container, process it as a unit to handle multi-node matches
       const container = element.closest(CODE_CONTAINER_SELECTOR);
       if (container) {
-        await processContainer(container as HTMLElement);
+        processContainer(container as HTMLElement);
         return;
       }
 
@@ -91,7 +85,7 @@ export async function processNode(node: Node, depth: number = 0): Promise<void> 
       // Re-process the container if a text node is added/changed inside one
       const container = node.parentElement?.closest(CODE_CONTAINER_SELECTOR);
       if (container) {
-        await processContainer(container as HTMLElement);
+        processContainer(container as HTMLElement);
       }
       break;
     }
@@ -101,7 +95,7 @@ export async function processNode(node: Node, depth: number = 0): Promise<void> 
 /**
  * Process a container element as a unit to support color matches spanning multiple text nodes.
  */
-export async function processContainer(container: HTMLElement): Promise<void> {
+export function processContainer(container: HTMLElement) {
   // 0. Remove existing colorization to allow clean re-processing
   removeColorization(container);
 
@@ -140,7 +134,7 @@ export async function processContainer(container: HTMLElement): Promise<void> {
   if (combinedText.length === 0) return;
 
   // 2. Detect colors in the combined text
-  const matches = await detectColorsAsync(combinedText);
+  const matches = detectColors(combinedText);
   if (matches.length === 0) {
     return;
   }

@@ -5,4 +5,3 @@ export * from "./domUtils";
 export * from "./selectors";
 export * from "./settingsStore";
 export * from "./parser";
-export * from "./workerManager";

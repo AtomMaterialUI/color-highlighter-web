@@ -1,5 +1,4 @@
 import { ColorMatch, COLOR_PARSERS } from "./colorParsers";
-import { detectColorsAsync } from "~utils/workerManager";
 
 export { ColorMatch };
 
@@ -43,7 +42,7 @@ export function detectColors(text: string): ColorMatch[] {
 /**
  * Check if a given text position is part of a color match
  */
-export async function isColorMatch(text: string, position: number): Promise<ColorMatch | null> {
-  const colors = await detectColorsAsync(text);
+export function isColorMatch(text: string, position: number): Promise<ColorMatch | null> {
+  const colors = detectColors(text);
   return colors.find((c) => position >= c.startIndex && position < c.endIndex) || null;
 }
