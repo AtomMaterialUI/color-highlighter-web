@@ -11,6 +11,7 @@ import {
 import { GUTTER_ICON_CLASS, updateGutterIcon } from "./gutter";
 import { getSettings } from "./settingsStore";
 import { isSupportedSite } from "./selectors";
+import { detectColorsAsync } from "~utils/workerManager";
 
 /**
  * Remove colorization from a container
@@ -91,7 +92,7 @@ function processTextNode(textNode: Text): void {
 /**
  * Process a node and its children to colorize color codes
  */
-export function processNode(node: Node, depth: number = 0): void {
+export async function processNode(node: Node, depth: number = 0): Promise<void> {
   const settings = getSettings();
   if (!settings.enabled) return;
 
@@ -133,14 +134,14 @@ export function processNode(node: Node, depth: number = 0): void {
       // If it's a code container, process it as a unit to handle multi-node matches
       const container = element.closest(CODE_CONTAINER_SELECTOR);
       if (container) {
-        processContainer(container as HTMLElement);
+        await processContainer(container as HTMLElement);
         return;
       }
 
       // Otherwise recurse to find containers or handle non-code areas
       const children = Array.from(element.childNodes);
       for (const child of children) {
-        processNode(child, depth + 1);
+        await processNode(child, depth + 1);
       }
       break;
     }
@@ -148,7 +149,7 @@ export function processNode(node: Node, depth: number = 0): void {
       // Re-process the container if a text node is added/changed inside one
       const container = node.parentElement?.closest(CODE_CONTAINER_SELECTOR);
       if (container) {
-        processContainer(container as HTMLElement);
+        await processContainer(container as HTMLElement);
       }
       break;
     }
@@ -158,7 +159,7 @@ export function processNode(node: Node, depth: number = 0): void {
 /**
  * Process a container element as a unit to support color matches spanning multiple text nodes.
  */
-export function processContainer(container: HTMLElement): void {
+export async function processContainer(container: HTMLElement): Promise<void> {
   // 0. Remove existing colorization to allow clean re-processing
   removeColorization(container);
 
@@ -197,8 +198,11 @@ export function processContainer(container: HTMLElement): void {
   if (combinedText.length === 0) return;
 
   // 2. Detect colors in the combined text
-  const matches = detectColors(combinedText);
-  if (matches.length === 0) return;
+  const matches = await detectColorsAsync(combinedText);
+  if (matches.length === 0) {
+    updateGutterIcon(container, []);
+    return;
+  }
 
   // 3. Update gutter icon with the last found color
   updateGutterIcon(container, matches);

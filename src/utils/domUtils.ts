@@ -46,8 +46,6 @@ export const CODE_CONTAINER_SELECTORS = currentSelectors.codeContainers;
  */
 export const SKIP_SELECTORS = currentSelectors.skip;
 
-
-
 /**
  * Create a wrapper span for a color match with different styles.
  * Supports partial matches for multi-node highlighting.

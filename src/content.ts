@@ -9,16 +9,18 @@ export const config = {
  * Setup a MutationObserver to handle dynamically added content
  */
 function setupMutationObserver(): void {
-  const observer = new MutationObserver((mutations) => {
+  const promises: Promise<void>[] = [];
+  const observer = new MutationObserver(async (mutations) => {
     for (const mutation of mutations) {
       if (mutation.type === "childList") {
         for (const node of mutation.addedNodes) {
           if (node.nodeType === Node.ELEMENT_NODE || node.nodeType === Node.TEXT_NODE) {
-            processNode(node);
+            promises.push(processNode(node));
           }
         }
       }
     }
+    await Promise.all(promises);
   });
 
   observer.observe(document.documentElement, {
