@@ -145,12 +145,10 @@ export function processNode(node: Node, depth: number = 0): void {
       break;
     }
     case Node.TEXT_NODE: {
-      // Only colorize text nodes that live inside a known code container.
-      // Without this guard, text anywhere on the page (e.g. inside MAIN_AREA
-      // but outside an editor/snippet) would be scanned for colors.
-      const parent = node.parentElement;
-      if (parent && parent.closest(CODE_CONTAINER_SELECTOR)) {
-        processTextNode(node as Text);
+      // Re-process the container if a text node is added/changed inside one
+      const container = node.parentElement?.closest(CODE_CONTAINER_SELECTOR);
+      if (container) {
+        processContainer(container as HTMLElement);
       }
       break;
     }
@@ -280,18 +278,9 @@ export function colorizeEditor(): void {
     return;
   }
 
-  // Find code editor containers on the page and colorize them.
+  // Find code editor containers on the page
   const codeContainers = document.querySelectorAll(CODE_CONTAINER_SELECTOR);
   codeContainers.forEach((container) => {
-    processNode(container, 0);
-  });
-
-  // Also handle textareas (e.g. GitHub comment boxes) which are not part of
-  // CODE_CONTAINER_SELECTOR but still get a gutter icon for detected colors.
-  // We intentionally do NOT fall back to scanning MAIN_AREA_SELECTOR, since
-  // that would colorize arbitrary text anywhere on the page.
-  const textareas = document.querySelectorAll(CODE_CONTAINER_SELECTOR);
-  textareas.forEach((textarea) => {
-    processNode(textarea, 0);
+    processContainer(container as HTMLElement);
   });
 }
