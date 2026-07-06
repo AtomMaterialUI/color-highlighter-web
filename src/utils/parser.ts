@@ -8,7 +8,7 @@ import {
   COLORIZE_CLASS,
   COLOR_SWATCH_CLASS,
 } from "./domUtils";
-import { GUTTER_ICON_CLASS, updateGutterIcon } from "./gutter";
+import { GUTTER_ICON_CLASS } from "./gutter";
 import { getSettings } from "./settingsStore";
 import { isSupportedSite } from "./selectors";
 import { detectColorsAsync } from "~utils/workerManager";
@@ -142,12 +142,8 @@ export async function processContainer(container: HTMLElement): Promise<void> {
   // 2. Detect colors in the combined text
   const matches = await detectColorsAsync(combinedText);
   if (matches.length === 0) {
-    updateGutterIcon(container, []);
     return;
   }
-
-  // 3. Update gutter icon with the last found color
-  updateGutterIcon(container, matches);
 
   // 4. For each text node, find overlapping matches and apply them
   for (let i = textNodes.length - 1; i >= 0; i--) {
