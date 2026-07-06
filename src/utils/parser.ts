@@ -1,4 +1,4 @@
-import { detectColors, ColorMatch } from "./colorDetector";
+import { ColorMatch } from "./colorDetector";
 import {
   CODE_CONTAINER_SELECTOR,
   SKIP_SELECTOR,
@@ -50,46 +50,6 @@ export function removeColorization(container: HTMLElement): void {
 }
 
 /**
- * Process text nodes to colorize color codes
- */
-function processTextNode(textNode: Text): void {
-  const settings = getSettings();
-  const text = textNode.textContent || "";
-
-  // Find color matches
-  const colorMatches = detectColors(text);
-
-  if (colorMatches.length === 0) {
-    return;
-  }
-
-  // Build the new content with colorized spans
-  const fragment = document.createDocumentFragment();
-  let lastIndex = 0;
-
-  for (const match of colorMatches) {
-    // Add text before this match
-    if (match.startIndex > lastIndex) {
-      fragment.appendChild(document.createTextNode(text.substring(lastIndex, match.startIndex)));
-    }
-
-    // Add colorized element
-    const colorizedElement = createColorizedElement(match, true, true, settings.colorizationType);
-    fragment.appendChild(colorizedElement);
-
-    lastIndex = match.endIndex;
-  }
-
-  // Add remaining text
-  if (lastIndex < text.length) {
-    fragment.appendChild(document.createTextNode(text.substring(lastIndex)));
-  }
-
-  // Replace the text node with the fragment
-  textNode.parentNode?.replaceChild(fragment, textNode);
-}
-
-/**
  * Process a node and its children to colorize color codes
  */
 export async function processNode(node: Node, depth: number = 0): Promise<void> {
@@ -116,8 +76,9 @@ export async function processNode(node: Node, depth: number = 0): Promise<void> 
       // Special handling for textareas (gutter icon only)
       if (element.tagName === "TEXTAREA") {
         const textarea = element as HTMLTextAreaElement;
-        const handler = () => {
-          const matches = detectColors(textarea.value);
+
+        const handler = async () => {
+          const matches = await detectColorsAsync(textarea.value);
           updateGutterIcon(textarea, matches);
         };
 
