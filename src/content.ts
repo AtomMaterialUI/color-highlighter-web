@@ -9,8 +9,8 @@ export const config = {
  * Setup a MutationObserver to handle dynamically added content
  */
 function setupMutationObserver(): void {
-  const promises: Promise<void>[] = [];
   const observer = new MutationObserver(async (mutations) => {
+    const promises: Promise<void>[] = [];
     for (const mutation of mutations) {
       if (mutation.type === "childList") {
         for (const node of mutation.addedNodes) {
@@ -26,8 +26,6 @@ function setupMutationObserver(): void {
   observer.observe(document.documentElement, {
     childList: true,
     subtree: true,
-    characterData: true,
-    characterDataOldValue: false,
   });
 }
 

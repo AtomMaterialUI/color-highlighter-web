@@ -73,25 +73,6 @@ export async function processNode(node: Node, depth: number = 0): Promise<void> 
 
       if (SKIP_TAGS.includes(element.tagName.toUpperCase())) return;
 
-      // Special handling for textareas (gutter icon only)
-      if (element.tagName === "TEXTAREA") {
-        const textarea = element as HTMLTextAreaElement;
-
-        const handler = async () => {
-          const matches = await detectColorsAsync(textarea.value);
-          updateGutterIcon(textarea, matches);
-        };
-
-        // Add listener for live updates if not already added
-        if (!(textarea as HTMLTextAreaElement & { _hasColorizeListener?: boolean })._hasColorizeListener) {
-          textarea.addEventListener("input", handler);
-          (textarea as HTMLTextAreaElement & { _hasColorizeListener?: boolean })._hasColorizeListener = true;
-        }
-
-        handler(); // Initial check
-        return;
-      }
-
       // If it's a code container, process it as a unit to handle multi-node matches
       const container = element.closest(CODE_CONTAINER_SELECTOR);
       if (container) {
