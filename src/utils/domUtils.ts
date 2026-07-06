@@ -26,11 +26,6 @@ export const CODE_CONTAINER_SELECTOR = currentSelectors.codeContainers.join(", "
 export const SKIP_SELECTOR = currentSelectors.skip.join(", ");
 
 /**
- * Selector for main content areas
- */
-export const MAIN_AREA_SELECTOR = currentSelectors.mainAreas.join(", ");
-
-/**
  * Selector for navigation elements that trigger re-colorization
  */
 export const NAV_SELECTOR = currentSelectors.navSelectors.join(", ");
@@ -51,10 +46,7 @@ export const CODE_CONTAINER_SELECTORS = currentSelectors.codeContainers;
  */
 export const SKIP_SELECTORS = currentSelectors.skip;
 
-/**
- * Selectors for main content areas (Legacy export for compatibility)
- */
-export const MAIN_AREA_SELECTORS = currentSelectors.mainAreas;
+
 
 /**
  * Create a wrapper span for a color match with different styles.

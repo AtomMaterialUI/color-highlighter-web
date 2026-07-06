@@ -3,7 +3,6 @@ import {
   CODE_CONTAINER_SELECTOR,
   SKIP_SELECTOR,
   SKIP_TAGS,
-  MAIN_AREA_SELECTOR,
   createColorizedElement,
   isAlreadyColorized,
   COLORIZE_CLASS,
@@ -146,11 +145,11 @@ export function processNode(node: Node, depth: number = 0): void {
       break;
     }
     case Node.TEXT_NODE: {
-      // We only reach here if we're not inside a code container yet
-      // because CODE_CONTAINER_SELECTOR check in ELEMENT_NODE would have triggered processContainer
-      // But some text nodes might be in MAIN_AREA but not in a specific code container
+      // Only colorize text nodes that live inside a known code container.
+      // Without this guard, text anywhere on the page (e.g. inside MAIN_AREA
+      // but outside an editor/snippet) would be scanned for colors.
       const parent = node.parentElement;
-      if (parent && parent.closest(MAIN_AREA_SELECTOR)) {
+      if (parent && parent.closest(CODE_CONTAINER_SELECTOR)) {
         processTextNode(node as Text);
       }
       break;
@@ -281,16 +280,18 @@ export function colorizeEditor(): void {
     return;
   }
 
-  // Find code editor containers on the page
+  // Find code editor containers on the page and colorize them.
   const codeContainers = document.querySelectorAll(CODE_CONTAINER_SELECTOR);
+  codeContainers.forEach((container) => {
+    processNode(container, 0);
+  });
 
-  if (codeContainers.length === 0) {
-    // Fallback: try to find main content area or just process body
-    const mainArea = document.querySelector(MAIN_AREA_SELECTOR);
-    processNode(mainArea || document.body, 0);
-  } else {
-    codeContainers.forEach((container) => {
-      processNode(container, 0);
-    });
-  }
+  // Also handle textareas (e.g. GitHub comment boxes) which are not part of
+  // CODE_CONTAINER_SELECTOR but still get a gutter icon for detected colors.
+  // We intentionally do NOT fall back to scanning MAIN_AREA_SELECTOR, since
+  // that would colorize arbitrary text anywhere on the page.
+  const textareas = document.querySelectorAll(CODE_CONTAINER_SELECTOR);
+  textareas.forEach((textarea) => {
+    processNode(textarea, 0);
+  });
 }

@@ -5,7 +5,6 @@
 export interface SiteSelectors {
   codeContainers: string[];
   skip: string[];
-  mainAreas: string[];
   navSelectors: string[];
   gutterRow?: string[];
   gutters?: string[];
@@ -31,7 +30,6 @@ const COMMON_SELECTORS: SiteSelectors = {
     "code",
   ],
   skip: [".line-numbers", ".line-number", ".ln", "[data-line-number]"],
-  mainAreas: ["main", "[role='main']"],
   navSelectors: [],
   gutterRow: ["tr"],
   gutters: [".line-numbers", ".line-number", ".ln", "[data-line-number]", '[class*="line-number"]', '[class*="ln"]', '[class*="num"]'],
@@ -60,7 +58,6 @@ const GITHUB_SELECTORS: SiteSelectors = {
     ".diff-line-num-next",
     ".blob-num-expandable",
   ],
-  mainAreas: [".repository-content", "#js-repo-pjax-container", "#repository-container-react"],
   navSelectors: [".js-navigation-open", "[data-tab-panel]", ".file-navigation"],
   gutterRow: [".react-file-line", "[data-testid='code-cell']", "tr"],
   gutters: [".react-line-number", "[data-line-number]", ".blob-num", ".js-line-number", ".diff-line-num", ".blob-num-expandable"],
@@ -74,7 +71,6 @@ const GITHUB_SELECTORS: SiteSelectors = {
 const GITLAB_SELECTORS: SiteSelectors = {
   codeContainers: [".file-content", ".js-syntax-highlight"],
   skip: [".td-line-number", ".line-numbers", ".diff-line-num"],
-  mainAreas: [".content-wrapper", ".tree-content-holder", ".blob-content-holder"],
   navSelectors: [".tree-item-file-name", ".file-title-name", ".nav-link"],
   gutterRow: ["tr"],
   gutters: [".line-numbers", ".diff-line-num", ".td-line-number"],
@@ -86,7 +82,6 @@ const GITLAB_SELECTORS: SiteSelectors = {
 const BITBUCKET_SELECTORS: SiteSelectors = {
   codeContainers: [".bitbucket-textarea-wrapper", ".file-content", ".CodeMirror"],
   skip: [".line-numbers", ".line-number-wrapper"],
-  mainAreas: ["#source-view", "#repo-content"],
   navSelectors: [".file-link", ".aui-nav-item"],
 };
 
@@ -100,15 +95,12 @@ const SITE_REGISTRY: Record<string, Partial<SiteSelectors>> = {
   "bitbucket.org": BITBUCKET_SELECTORS,
   "gitee.com": {
     codeContainers: [".code-area", ".highlight"],
-    mainAreas: [".repository-content"],
   },
   "dev.azure.com": {
     codeContainers: [".monaco-editor"],
-    mainAreas: [".main-container", "#region-main"],
   },
   "gitpod.io": {
     codeContainers: [".monaco-editor"],
-    mainAreas: ["#main-content"],
   },
 };
 
@@ -126,7 +118,6 @@ export function getSelectorsForCurrentSite(): SiteSelectors {
   return {
     codeContainers: Array.from(new Set([...COMMON_SELECTORS.codeContainers, ...(siteSpecific.codeContainers || [])])),
     skip: Array.from(new Set([...COMMON_SELECTORS.skip, ...(siteSpecific.skip || [])])),
-    mainAreas: Array.from(new Set([...COMMON_SELECTORS.mainAreas, ...(siteSpecific.mainAreas || [])])),
     navSelectors: Array.from(new Set([...COMMON_SELECTORS.navSelectors, ...(siteSpecific.navSelectors || [])])),
     gutterRow: Array.from(new Set([...(COMMON_SELECTORS.gutterRow || []), ...(siteSpecific.gutterRow || [])])),
     gutters: Array.from(new Set([...(COMMON_SELECTORS.gutters || []), ...(siteSpecific.gutters || [])])),
