@@ -1,6 +1,5 @@
 import { ColorMatch } from "./colorDetector";
 import { getSelectorsForCurrentSite } from "./selectors";
-import { getSettings } from "./settingsStore";
 
 export const GUTTER_ICON_CLASS = "github-colorize-gutter-icon";
 
@@ -85,40 +84,40 @@ export function createGutterIcon(hexColor: string, isTextarea: boolean = false):
  * Update the gutter icon for a container based on detected colors
  */
 export function updateGutterIcon(container: HTMLElement, matches: ColorMatch[]): void {
-  const gutter = findGutterElement(container);
-  if (!gutter) return;
-
-  if (matches.length === 0) {
-    // Remove icon if no colors anymore (e.g. user deleted text)
-    const existing = gutter.querySelector(`.${GUTTER_ICON_CLASS}`);
-    if (existing) existing.remove();
-    return;
-  }
-
-  const selectors = getSelectorsForCurrentSite();
-
-  // Get the last color
-  const lastMatch = matches[matches.length - 1];
-
-  // Check if icon already exists
-  let icon = gutter.querySelector(`.${GUTTER_ICON_CLASS}`) as HTMLElement;
-
-  if (icon) {
-    icon.style.backgroundColor = lastMatch.hexColor;
-    icon.title = `Click to copy: ${lastMatch.hexColor}`;
-  } else {
-    icon = createGutterIcon(lastMatch.hexColor, container.tagName === "TEXTAREA");
-
-    // For textarea parents that are not headers, ensure they are relative
-    if (container.tagName === "TEXTAREA" && getComputedStyle(gutter).position === "static") {
-      // Check if it's NOT a header
-      const isHeader = selectors.commentHeader?.some((h) => gutter.matches(h) || gutter.closest(h) === gutter);
-
-      if (!isHeader) {
-        gutter.style.position = "relative";
-      }
-    }
-
-    gutter.appendChild(icon);
-  }
+  // const gutter = findGutterElement(container);
+  // if (!gutter) return;
+  //
+  // if (matches.length === 0) {
+  //   // Remove icon if no colors anymore (e.g. user deleted text)
+  //   const existing = gutter.querySelector(`.${GUTTER_ICON_CLASS}`);
+  //   if (existing) existing.remove();
+  //   return;
+  // }
+  //
+  // const selectors = getSelectorsForCurrentSite();
+  //
+  // // Get the last color
+  // const lastMatch = matches[matches.length - 1];
+  //
+  // // Check if icon already exists
+  // let icon = gutter.querySelector(`.${GUTTER_ICON_CLASS}`) as HTMLElement;
+  //
+  // if (icon) {
+  //   icon.style.backgroundColor = lastMatch.hexColor;
+  //   icon.title = `Click to copy: ${lastMatch.hexColor}`;
+  // } else {
+  //   icon = createGutterIcon(lastMatch.hexColor, container.tagName === "TEXTAREA");
+  //
+  //   // For textarea parents that are not headers, ensure they are relative
+  //   if (container.tagName === "TEXTAREA" && getComputedStyle(gutter).position === "static") {
+  //     // Check if it's NOT a header
+  //     const isHeader = selectors.commentHeader?.some((h) => gutter.matches(h) || gutter.closest(h) === gutter);
+  //
+  //     if (!isHeader) {
+  //       gutter.style.position = "relative";
+  //     }
+  //   }
+  //
+  //   gutter.appendChild(icon);
+  // }
 }
