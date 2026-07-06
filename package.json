@@ -1,8 +1,8 @@
 {
   "name": "color-highlighter",
   "displayName": "Color Highlighter",
-  "version": "0.1.0",
-  "description": "Colorize hex codes, RGB, HSL, and color names in online code editors",
+  "version": "0.2.0",
+  "description": "Colorize hex codes, RGB, HSL, and color names in online code editors and snippets",
   "author": "Elior (Mallowigi) Boukhobza",
   "type": "module",
   "scripts": {
@@ -25,7 +25,6 @@
     "@radix-ui/react-icons": "^1.3.2",
     "@radix-ui/themes": "^3.3.0",
     "chroma-js": "^3.2.0",
-    "polished": "^4.3.1",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "webextension-polyfill": "^0.12.0"
@@ -55,7 +54,6 @@
   },
   "manifest": {
     "permissions": [
-      "scripting",
       "storage",
       "activeTab"
     ],

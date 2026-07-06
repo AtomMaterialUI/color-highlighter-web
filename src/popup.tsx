@@ -110,7 +110,7 @@ export default function IndexPopup() {
                     Force Detect
                   </Text>
                   <Text size="1" color="gray">
-                    Enable on all websites' code and pre blocks
+                    Enable on all websites' <code>&lt;code&gt;</code> and <code>&lt;pre&gt;</code> blocks
                   </Text>
                 </Flex>
                 <Switch checked={settings.forceDetect} onCheckedChange={(checked) => update({ forceDetect: checked })} />
@@ -119,7 +119,11 @@ export default function IndexPopup() {
           </Card>
 
           <Text size="1" color="gray" align="center">
-            Changes may require page refresh
+            Changes may require page refresh.
+          </Text>
+
+          <Text size="1" color="amber" align="center">
+            This extension doesn't work on large files.
           </Text>
         </Flex>
       </Box>
