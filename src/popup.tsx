@@ -1,27 +1,42 @@
 import { useEffect, useState } from "react";
 import { Theme, Flex, Text, Switch, Select, Box, Heading, Card, IconButton } from "@radix-ui/themes";
-import { ColorWheelIcon, MoonIcon, SunIcon } from "@radix-ui/react-icons";
-import { ColorizationType, Settings, Appearance, DEFAULT_SETTINGS } from "./types";
-import { getSettings, initSettings, saveSettings, subscribeSettings } from "./utils/settingsStore";
+import { ColorWheelIcon, Cross1Icon, MoonIcon, SunIcon } from "@radix-ui/react-icons";
+import browser from "webextension-polyfill";
+import { ColorizationType, Settings, DEFAULT_SETTINGS } from "./types";
+import {
+  addDisabledSite,
+  getSettings,
+  initSettings,
+  removeDisabledSite,
+  saveSettings,
+  subscribeSettings,
+  withAppearance,
+} from "./utils/settingsStore";
 import "@radix-ui/themes/styles.css";
 
-function getSystemAppearance(): Appearance {
-  if (typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
-    return "dark";
-  }
-  return "light";
-}
+/**
+ * Resolve the hostname of the currently active tab, if any. Returns null when
+ * the popup is opened outside of a normal http(s) page (chrome://, about:, etc.).
+ */
+async function getCurrentTabHostname(): Promise<string | null> {
+  try {
+    const [tab] = await browser.tabs.query({ active: true, currentWindow: true });
+    if (!tab?.url) return null;
 
-/** Fill in `appearance` (which isn't persisted with a default) using the system preference. */
-function withAppearance(s: Settings): Settings {
-  return {
-    ...s,
-    appearance: s.appearance ?? getSystemAppearance(),
-  };
+    const url = new URL(tab.url);
+    if (url.protocol !== "http:" && url.protocol !== "https:") {
+      return null;
+    }
+
+    return url.hostname.toLowerCase();
+  } catch {
+    return null;
+  }
 }
 
 export default function IndexPopup() {
   const [settings, setSettings] = useState<Settings>(() => withAppearance({ ...DEFAULT_SETTINGS }));
+  const [currentHost, setCurrentHost] = useState<string | null>(null);
 
   useEffect(() => {
     let unsub: (() => void) | undefined;
@@ -30,6 +45,8 @@ export default function IndexPopup() {
       setSettings(withAppearance(loaded));
       unsub = subscribeSettings((next) => setSettings(withAppearance(next)));
     });
+
+    getCurrentTabHostname().then(setCurrentHost);
 
     return () => {
       unsub?.();
@@ -49,6 +66,19 @@ export default function IndexPopup() {
     update({
       appearance: settings.appearance === "dark" ? "light" : "dark",
     });
+  };
+
+  const isCurrentSiteEnabled = !!currentHost && !settings.disabledSites.includes(currentHost);
+
+  const toggleCurrentSite = (enabled: boolean) => {
+    if (!currentHost) return;
+
+    if (enabled) {
+      removeDisabledSite(currentHost);
+    }
+    else {
+      addDisabledSite(currentHost);
+    }
   };
 
   return (
@@ -72,6 +102,26 @@ export default function IndexPopup() {
                   Enabled
                 </Text>
                 <Switch checked={settings.enabled} onCheckedChange={(checked) => update({ enabled: checked })} />
+              </Flex>
+
+              <Flex justify="between" align="center">
+                <Flex direction="column" style={{ minWidth: 0, flex: 1, marginRight: 8 }}>
+                  <Text size="2" weight="bold">
+                    Enabled on this site
+                  </Text>
+                  <Text
+                    size="1"
+                    color="gray"
+                    style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
+                  >
+                    {currentHost ?? "Not available on this page"}
+                  </Text>
+                </Flex>
+                <Switch
+                  checked={isCurrentSiteEnabled}
+                  disabled={!currentHost}
+                  onCheckedChange={toggleCurrentSite}
+                />
               </Flex>
 
               <Flex direction="column" gap="2">
@@ -117,6 +167,37 @@ export default function IndexPopup() {
               </Flex>
             </Flex>
           </Card>
+
+          {settings.disabledSites.length > 0 && (
+            <Card variant="surface">
+              <Flex direction="column" gap="2">
+                <Text size="2" weight="bold">
+                  Disabled sites
+                </Text>
+                <Flex direction="column" gap="1">
+                  {settings.disabledSites.map((host) => (
+                    <Flex key={host} justify="between" align="center" gap="2">
+                      <Text
+                        size="1"
+                        style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1 }}
+                      >
+                        {host}
+                      </Text>
+                      <IconButton
+                        size="1"
+                        variant="ghost"
+                        color="gray"
+                        aria-label={`Re-enable ${host}`}
+                        onClick={() => removeDisabledSite(host)}
+                      >
+                        <Cross1Icon />
+                      </IconButton>
+                    </Flex>
+                  ))}
+                </Flex>
+              </Flex>
+            </Card>
+          )}
 
           <Text size="1" color="gray" align="center">
             Changes may require page refresh.

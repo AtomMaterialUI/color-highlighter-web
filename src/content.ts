@@ -3,6 +3,8 @@ import {
   initSettings,
   subscribeSettings,
   getSettings,
+  isHostDisabled,
+  changesRequireRepaint,
   colorizeEditor,
   removeColorization,
   processNode
@@ -14,10 +16,29 @@ export const config = {
 };
 
 /**
+ * Cached "is this hostname disabled?" flag. Recomputed only when the
+ * `disabledSites` setting changes — avoids per-mutation string work in the
+ * MutationObserver hot path.
+ */
+let siteDisabled = false;
+
+function refreshSiteDisabled(): void {
+  siteDisabled = isHostDisabled(typeof location !== "undefined" ? location.hostname : null);
+}
+
+/** Paint colors if the extension is enabled and this site isn't disabled. */
+function runColorization(): void {
+  if (!getSettings().enabled || siteDisabled) return;
+  colorizeEditor();
+}
+
+/**
  * Setup a MutationObserver to handle dynamically added content
  */
 function setupMutationObserver(): void {
   const observer = new MutationObserver((mutations) => {
+    if (siteDisabled) return;
+
     for (const mutation of mutations) {
       if (mutation.type === "childList") {
         for (const node of mutation.addedNodes) {
@@ -42,15 +63,19 @@ async function init(): Promise<void> {
   // Load settings into the singleton store (all downstream modules read from it)
   await initSettings();
 
-  // Initial colorization
-  colorizeEditor();
+  refreshSiteDisabled();
 
-  // React to settings changes: repaint whenever settings mutate
-  subscribeSettings(() => {
+  // Initial colorization
+  runColorization();
+
+  // React to settings changes: only repaint when a paint-affecting setting changed.
+  subscribeSettings((_next, changed) => {
+    if ("disabledSites" in changed) refreshSiteDisabled();
+
+    if (!changesRequireRepaint(changed)) return;
+
     removeColorization(document.body);
-    if (getSettings().enabled) {
-      colorizeEditor();
-    }
+    runColorization();
   });
 
   // Setup mutation observer for dynamic changes
@@ -61,7 +86,7 @@ async function init(): Promise<void> {
     document.addEventListener("click", (e) => {
       const target = e.target as HTMLElement;
       if (target.closest(NAV_SELECTOR)) {
-        setTimeout(() => colorizeEditor(), 100);
+        setTimeout(runColorization, 100);
       }
     });
   }
@@ -69,7 +94,7 @@ async function init(): Promise<void> {
   // Re-colorize on page load complete
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", () => {
-      setTimeout(() => colorizeEditor(), 200);
+      setTimeout(runColorization, 200);
     });
   }
 
@@ -89,12 +114,12 @@ const originalReplaceState = window.history.replaceState;
 
 window.history.pushState = function (...args) {
   const result = originalPushState.apply(this, args);
-  setTimeout(() => colorizeEditor(), 100);
+  setTimeout(runColorization, 100);
   return result;
 };
 
 window.history.replaceState = function (...args) {
   const result = originalReplaceState.apply(this, args);
-  setTimeout(() => colorizeEditor(), 100);
+  setTimeout(runColorization, 100);
   return result;
 };

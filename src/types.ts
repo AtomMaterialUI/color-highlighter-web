@@ -7,6 +7,7 @@ export interface Settings {
   colorizationType: ColorizationType;
   showSwatch: boolean;
   forceDetect: boolean;
+  disabledSites: string[];
   appearance?: Appearance;
 }
 
@@ -15,4 +16,5 @@ export const DEFAULT_SETTINGS: Settings = {
   colorizationType: "background",
   showSwatch: true,
   forceDetect: false,
+  disabledSites: [],
 };
