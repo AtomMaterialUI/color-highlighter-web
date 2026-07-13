@@ -2,7 +2,7 @@ import { IColorParser, ColorMatch, tryParseColor } from "./types";
 
 export class HslParser implements IColorParser {
   id = "hsl";
-  private pattern = /hsla?\s*\(\s*(\d+)\s*,\s*([\d.]+)%\s*,\s*([\d.]+)%\s*(?:,\s*([\d.]+)\s*)?\)/gi;
+  private pattern = /hsla?\s*\(\s*(\d+)\s*[,\s]\s*([\d.]+)%\s*[,\s]\s*([\d.]+)%\s*(?:,\s*([\d.]+)\s*)?\)/gi;
 
   getMatches(text: string): ColorMatch[] {
     const matches: ColorMatch[] = [];
