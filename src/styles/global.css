@@ -44,12 +44,13 @@
   transform: scale(0.9);
 }
 
-.github-colorize-gutter-icon.is-textarea {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  z-index: 100;
-  width: 12px;
-  height: 12px;
-  box-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+
+/* Keep the swatch in flow (visibility, not display) to avoid reflow-cancelling
+   an in-progress mouse selection. */
+pre:focus-within .github-colorize-swatch,
+code:focus-within .github-colorize-swatch,
+[contenteditable]:focus-within .github-colorize-swatch,
+.CodeMirror-focused .github-colorize-swatch,
+html.github-colorize-selecting .github-colorize-swatch {
+  display: none !important;
 }
