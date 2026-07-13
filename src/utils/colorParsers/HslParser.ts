@@ -1,4 +1,5 @@
-import { IColorParser, ColorMatch, tryParseColor } from "./types";
+import { tryParseColor } from "~utils/colorParsers/utils";
+import { IColorParser, ColorMatch } from "./types";
 
 export class HslParser implements IColorParser {
   id = "hsl";

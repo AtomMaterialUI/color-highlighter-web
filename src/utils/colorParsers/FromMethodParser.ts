@@ -1,5 +1,5 @@
-import { IColorParser, ColorMatch, tryParseColor } from "./types";
-import { normalizeAlpha } from "./utils";
+import { IColorParser, ColorMatch } from "./types";
+import { normalizeAlpha, tryParseColor } from "./utils";
 
 /**
  * Matches patterns like Color.FromArgb(a, r, g, b), Color.FromRgb(r, g, b), Color.FromHsl(h, s, l)

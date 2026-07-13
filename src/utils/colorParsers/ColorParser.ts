@@ -1,5 +1,5 @@
-import { IColorParser, ColorMatch, tryParseColor } from "./types";
-import { normalizeAlpha, parseSingleArg } from "./utils";
+import { IColorParser, ColorMatch } from "./types";
+import { normalizeAlpha, parseSingleArg, tryParseColor } from "./utils";
 
 /**
  * Matches patterns like Color(r, g, b), new Color(r, g, b, a), Color(hex)

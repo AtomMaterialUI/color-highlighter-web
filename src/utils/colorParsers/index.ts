@@ -28,3 +28,5 @@ export const COLOR_PARSERS: IColorParser[] = [
   new FromMethodParser(),
   new NamedParser(),
 ];
+export { getNamedColor } from "~utils/colorParsers/utils";
+export { tryParseColor } from "~utils/colorParsers/utils";

@@ -1,4 +1,5 @@
-import { IColorParser, ColorMatch, getNamedColor } from "./types";
+import { getNamedColor } from "~utils/colorParsers/utils";
+import { IColorParser, ColorMatch } from "./types";
 
 export class NamedParser implements IColorParser {
   id = "named";
