@@ -1,7 +1,7 @@
 {
   "name": "color-highlighter",
   "displayName": "Color Highlighter",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Colorize hex codes, RGB, HSL, and color names in online code editors and snippets",
   "author": "Elior (Mallowigi) Boukhobza",
   "type": "module",
